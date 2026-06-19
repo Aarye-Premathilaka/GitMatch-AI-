@@ -3186,6 +3186,25 @@
       }
     }
 
+    async function giftmatchReadJsonResponse(response) {
+      const contentType = response.headers.get("content-type") || "";
+      const responseText = await response.text();
+
+      if (contentType.includes("application/json")) {
+        try {
+          return responseText ? JSON.parse(responseText) : {};
+        } catch (error) {
+          throw new Error("AI backend returned invalid JSON. Please redeploy the /api/gift endpoint.");
+        }
+      }
+
+      if (responseText.trim().startsWith("<")) {
+        throw new Error("AI backend returned an HTML page instead of JSON. Make sure /api/gift is deployed on Vercel, then redeploy.");
+      }
+
+      throw new Error(responseText.trim() || "AI backend returned an unexpected response.");
+    }
+
     async function generateGifts() {
       const description = document.getElementById("description").value;
       const receiver = document.getElementById("receiver").value;
@@ -3214,15 +3233,16 @@
         const response = await fetch(GEMINI_BACKEND_URL, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Accept": "application/json"
           },
           body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        const data = await giftmatchReadJsonResponse(response);
 
         if (!response.ok) {
-          throw new Error(data?.error || "AI backend error");
+          throw new Error(data?.error || data?.details || "AI backend error");
         }
 
         const ideas = Array.isArray(data.ideas) ? data.ideas : [];
