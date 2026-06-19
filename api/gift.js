@@ -1,19 +1,39 @@
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+const DEFAULT_ALLOWED_ORIGINS = "*";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGIN || "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Accept",
-  "Access-Control-Max-Age": "86400",
-  "Content-Type": "application/json; charset=utf-8"
-};
-
-function setCorsHeaders(res) {
-  Object.entries(corsHeaders).forEach(([key, value]) => res.setHeader(key, value));
+function parseAllowedOrigins() {
+  return (process.env.ALLOWED_ORIGIN || process.env.ALLOWED_ORIGINS || DEFAULT_ALLOWED_ORIGINS)
+    .split(",")
+    .map(origin => origin.trim())
+    .filter(Boolean);
 }
 
-function sendJson(res, statusCode, body) {
-  setCorsHeaders(res);
+function getRequestOrigin(req) {
+  return req.headers?.origin || "";
+}
+
+function getAllowedOrigin(req) {
+  const allowedOrigins = parseAllowedOrigins();
+
+  if (allowedOrigins.includes("*")) {
+    return "*";
+  }
+
+  const requestOrigin = getRequestOrigin(req);
+  return allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0] || DEFAULT_ALLOWED_ORIGINS;
+}
+
+function setCorsHeaders(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", getAllowedOrigin(req));
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
+  res.setHeader("Access-Control-Max-Age", "86400");
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+}
+
+function sendJson(req, res, statusCode, body) {
+  setCorsHeaders(req, res);
   res.status(statusCode).json(body);
 }
 
@@ -84,29 +104,30 @@ Required JSON format:
 }
 
 module.exports = async function handler(req, res) {
-  setCorsHeaders(res);
+  setCorsHeaders(req, res);
 
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
   if (req.method === "GET") {
-    return sendJson(res, 200, {
+    return sendJson(req, res, 200, {
       ok: true,
       route: "/api/gift",
       message: "Giftmatch.ai API is deployed. Send a POST request to generate gift ideas.",
       geminiApiKeyConfigured: Boolean(process.env.GEMINI_API_KEY),
+      allowedOrigins: parseAllowedOrigins(),
       model: GEMINI_MODEL
     });
   }
 
   if (req.method !== "POST") {
-    return sendJson(res, 405, { error: "Method not allowed. Use POST /api/gift." });
+    return sendJson(req, res, 405, { error: "Method not allowed. Use POST /api/gift." });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return sendJson(res, 500, {
+    return sendJson(req, res, 500, {
       error: "GEMINI_API_KEY is not configured. Add it in Vercel Project Settings > Environment Variables, then redeploy."
     });
   }
@@ -144,7 +165,7 @@ module.exports = async function handler(req, res) {
     const geminiData = await readJsonSafely(geminiResponse);
 
     if (!geminiResponse.ok) {
-      return sendJson(res, geminiResponse.status, {
+      return sendJson(req, res, geminiResponse.status, {
         error: "Gemini API request failed.",
         details: geminiData?.error?.message || "Unknown Gemini error",
         model: GEMINI_MODEL
@@ -156,17 +177,17 @@ module.exports = async function handler(req, res) {
     try {
       parsed = JSON.parse(cleanGeminiJson(text));
     } catch (parseError) {
-      return sendJson(res, 502, {
+      return sendJson(req, res, 502, {
         error: "Gemini returned a response that was not valid JSON.",
         details: parseError.message
       });
     }
 
     const ideas = Array.isArray(parsed.ideas) ? parsed.ideas.slice(0, 5) : [];
-    return sendJson(res, 200, { ideas, model: GEMINI_MODEL });
+    return sendJson(req, res, 200, { ideas, model: GEMINI_MODEL });
   } catch (error) {
     const statusCode = error instanceof SyntaxError ? 400 : 500;
-    return sendJson(res, statusCode, {
+    return sendJson(req, res, statusCode, {
       error: statusCode === 400 ? "Request body must be valid JSON." : "Giftmatch.ai backend error.",
       details: error.message
     });

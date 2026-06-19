@@ -3123,6 +3123,15 @@
       return base + "&q=" + encodeURIComponent(query);
     }
 
+    function giftmatchEscapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
     function giftmatchImageQuery(idea) {
       const text = (idea.name || idea.googleSearchQuery || "gift product").replace(/[^a-zA-Z0-9\s]/g, " ");
       return "https://source.unsplash.com/600x400/?" + encodeURIComponent(text);
@@ -3199,7 +3208,7 @@
       }
 
       if (responseText.trim().startsWith("<")) {
-        throw new Error("AI backend returned an HTML page instead of JSON. Make sure /api/gift is deployed on Vercel, then redeploy.");
+        throw new Error("AI backend returned an HTML page instead of JSON. Open /api/gift on the same domain; it should show JSON. If it shows HTML, redeploy the repository root on Vercel so api/gift.js is included.");
       }
 
       throw new Error(responseText.trim() || "AI backend returned an unexpected response.");
@@ -3251,7 +3260,7 @@
         resultArea.innerHTML = `
           <div class="match-summary">
             <div class="ai-error-box">
-              AI connection failed: ${error.message}. Check Vercel environment variable, CORS backend file, and redeploy.
+              AI connection failed: ${giftmatchEscapeHtml(error.message)} Check the Vercel <code>GEMINI_API_KEY</code> environment variable, confirm <code>/api/gift</code> returns JSON, and redeploy.
             </div>
             <h3>Fallback Google Search</h3>
             <p>Use this fresh Google search while the AI connection is being fixed.</p>

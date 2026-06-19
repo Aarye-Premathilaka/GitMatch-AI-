@@ -15,6 +15,14 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "Content-Type, Accept"
+        },
+        {
+          "key": "Access-Control-Max-Age",
+          "value": "86400"
+        },
+        {
+          "key": "Vary",
+          "value": "Origin"
         }
       ]
     }
