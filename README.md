@@ -109,6 +109,8 @@ curl -X POST http://localhost:3000/api/gift \
 
 This error means the browser requested `/api/gift`, but the response was an HTML page, usually because the deployed URL is serving only the static frontend and not the Vercel serverless API route. Follow this checklist in order. Do not skip the health-check steps.
 
+> **GitHub Pages note:** URLs like `https://username.github.io/...` are static hosting only. They cannot run `api/gift.js`, so a browser POST to `https://username.github.io/api/gift` will fail with `405 Method Not Allowed` or return HTML instead of JSON. Use the Vercel deployment URL for the app, or configure the frontend to call a deployed Vercel API endpoint by setting `window.GIFTMATCH_BACKEND_URL` or a `<meta name="giftmatch-backend-url" content="https://your-project.vercel.app/api/gift">` tag before the gift script runs.
+
 ### Step 1: Confirm the API file exists in the deployed repository
 
 Your GitHub repository must include these files at the repository root:
