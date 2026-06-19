@@ -1,0 +1,3319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giftmatch.ai - Creative Gift Ideas Made Simple</title>
+
+  <style>
+    :root {
+      --blue: #4285f4;
+      --red: #ea4335;
+      --yellow: #fbbc05;
+      --green: #34a853;
+      --text: #202124;
+      --muted: #5f6368;
+      --bg: #ffffff;
+      --soft-bg: #f8fafd;
+      --card: #ffffff;
+      --border: #e8eaed;
+      --shadow: 0 16px 45px rgba(60, 64, 67, 0.14);
+      --small-shadow: 0 8px 22px rgba(60, 64, 67, 0.08);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-container {
+      max-width: 1220px;
+      margin: auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span:nth-child(1) { color: var(--blue); }
+    .logo span:nth-child(2) { color: var(--red); }
+    .logo span:nth-child(3) { color: var(--yellow); }
+    .logo span:nth-child(4) { color: var(--green); }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .nav-links a:hover {
+      color: var(--blue);
+    }
+
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      background:
+        radial-gradient(circle at top left, rgba(66, 133, 244, 0.14), transparent 30%),
+        radial-gradient(circle at top right, rgba(251, 188, 5, 0.2), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(52, 168, 83, 0.13), transparent 35%);
+      padding: 80px 24px;
+    }
+
+    .hero-container {
+      max-width: 1220px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      box-shadow: var(--small-shadow);
+      margin-bottom: 22px;
+      font-weight: 700;
+    }
+
+    .badge-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 6.7rem);
+      line-height: 0.95;
+      letter-spacing: -4px;
+      margin-bottom: 20px;
+    }
+
+    .color-blue { color: var(--blue); }
+    .color-red { color: var(--red); }
+    .color-yellow { color: var(--yellow); }
+    .color-green { color: var(--green); }
+
+    .subtitle {
+      font-size: clamp(1.5rem, 3vw, 2.35rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .hero-text {
+      color: var(--muted);
+      font-size: 1.08rem;
+      max-width: 650px;
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 800;
+      transition: 0.25s ease;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: white;
+      box-shadow: 0 8px 20px rgba(66, 133, 244, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(66, 133, 244, 0.45);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      animation: float 5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .mini-search {
+      background: var(--soft-bg);
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+    }
+
+    .mini-search p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .mini-search strong {
+      display: block;
+      font-size: 1.15rem;
+    }
+
+    .preview-gift {
+      display: grid;
+      gap: 14px;
+    }
+
+    .preview-item {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 20px;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+
+    .icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      font-size: 1.35rem;
+      flex: 0 0 auto;
+      font-weight: 900;
+    }
+
+    .icon.blue { background: rgba(66, 133, 244, 0.12); }
+    .icon.red { background: rgba(234, 67, 53, 0.12); }
+    .icon.yellow { background: rgba(251, 188, 5, 0.18); }
+    .icon.green { background: rgba(52, 168, 83, 0.12); }
+
+    section {
+      padding: 90px 24px;
+    }
+
+    .section-container {
+      max-width: 1220px;
+      margin: auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -2px;
+      margin-bottom: 14px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 auto 45px;
+      font-size: 1.05rem;
+    }
+
+    .gift-tool {
+      background: var(--soft-bg);
+    }
+
+    .tool-card {
+      background: #fff;
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: 30px;
+    }
+
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 1rem;
+      outline: none;
+      background: white;
+      transition: 0.2s ease;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+      margin-bottom: 20px;
+    }
+
+    textarea:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.12);
+    }
+
+    label {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .interest-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      color: var(--muted);
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .chip.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+      box-shadow: 0 6px 16px rgba(66, 133, 244, 0.25);
+    }
+
+    .store-filter-box {
+      position: relative;
+    }
+
+    #storeFilter:disabled {
+      background: #f1f3f4;
+      color: #9aa0a6;
+      cursor: not-allowed;
+      border-color: #dadce0;
+    }
+
+    .store-message {
+      display: none;
+      margin-top: 7px;
+      color: var(--red);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .store-message.show {
+      display: block;
+    }
+
+    .learning-note {
+      margin: -10px 0 24px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+      background: var(--soft-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px 14px;
+    }
+
+    .chip.learned {
+      border-color: rgba(52, 168, 83, 0.35);
+      color: var(--green);
+      background: rgba(52, 168, 83, 0.06);
+    }
+
+    .chip.learned::after {
+      content: " learned";
+      font-size: 0.72rem;
+      opacity: 0.8;
+      margin-left: 4px;
+    }
+
+    .loading-panel {
+      display: none;
+      margin-top: 28px;
+      background: linear-gradient(135deg, #ffffff, #f8fafd);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: var(--small-shadow);
+    }
+
+    .loading-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .loading-title {
+      font-weight: 900;
+      letter-spacing: -0.4px;
+    }
+
+    .loading-percent {
+      color: var(--blue);
+      font-weight: 900;
+    }
+
+    .loading-track {
+      height: 12px;
+      border-radius: 999px;
+      background: #eef2f7;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .loading-bar {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--green), var(--yellow), var(--red));
+      transition: width 0.2s ease;
+    }
+
+    .loading-steps {
+      margin-top: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .result-area {
+      display: none;
+      margin-top: 34px;
+    }
+
+    .match-summary {
+      margin-bottom: 28px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: var(--small-shadow);
+    }
+
+    .match-summary h3 {
+      font-size: 1.45rem;
+      margin-bottom: 14px;
+      letter-spacing: -0.6px;
+    }
+
+    .idea-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .idea-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      background: var(--soft-bg);
+    }
+
+    .idea-row strong {
+      font-size: 1.05rem;
+    }
+
+    .idea-row p {
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .match-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--green);
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 6px 16px rgba(52, 168, 83, 0.22);
+    }
+
+    .shopping-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .shopping-title h3 {
+      font-size: 1.55rem;
+      letter-spacing: -0.7px;
+    }
+
+    .shopping-title p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+
+    .ai-status-box {
+      display: none;
+      margin-top: 28px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: var(--small-shadow);
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .ai-error-box {
+      background: rgba(234, 67, 53, 0.08);
+      color: var(--red);
+      border: 1px solid rgba(234, 67, 53, 0.22);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-weight: 800;
+    }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(52, 168, 83, 0.10);
+      color: var(--green);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .ai-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(60, 64, 67, 0.08);
+      transition: 0.25s ease;
+    }
+
+    .ai-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .ai-card-image {
+      height: 180px;
+      background-size: cover;
+      background-position: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .ai-card-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.25));
+    }
+
+    .ai-match {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+      background: rgba(255,255,255,0.96);
+      color: var(--green);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+
+    .ai-card-body {
+      padding: 16px;
+    }
+
+    .ai-card-body h4 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .ai-card-body p {
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .ai-price {
+      color: var(--green);
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .ai-stores {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .ai-buttons {
+      display: grid;
+      gap: 8px;
+    }
+
+    .ai-link {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 999px;
+      padding: 10px 12px;
+      background: rgba(66, 133, 244, 0.10);
+      color: var(--blue);
+      font-weight: 900;
+    }
+
+    .ai-link:hover {
+      background: rgba(66, 133, 244, 0.18);
+    }
+
+    .shopping-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .shopping-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(60, 64, 67, 0.08);
+      transition: 0.25s ease;
+    }
+
+    .shopping-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .product-image {
+      height: 170px;
+      background-size: cover;
+      background-position: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .product-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.25));
+    }
+
+    .safe-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+      background: rgba(255,255,255,0.94);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      color: var(--green);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+
+    .shopping-body {
+      padding: 15px;
+    }
+
+    .shopping-body h4 {
+      font-size: 1rem;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      font-weight: 900;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+
+    .shop {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .rating {
+      color: #f6b500;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(66, 133, 244, 0.1);
+      color: var(--blue);
+      font-weight: 900;
+    }
+
+    .open-link:hover {
+      background: rgba(66, 133, 244, 0.18);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .info-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: var(--small-shadow);
+      transition: 0.25s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .info-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.25rem;
+    }
+
+    .info-card p {
+      color: var(--muted);
+    }
+
+    .examples {
+      background: var(--soft-bg);
+    }
+
+    .example-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .example {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      cursor: pointer;
+      transition: 0.25s ease;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .example:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      color: var(--blue);
+    }
+
+    .category-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .category {
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 16px rgba(60, 64, 67, 0.06);
+      font-weight: 800;
+    }
+
+    .about {
+      background:
+        linear-gradient(135deg, rgba(66, 133, 244, 0.1), rgba(52, 168, 83, 0.08)),
+        #fff;
+    }
+
+    .about-box {
+      max-width: 850px;
+      margin: auto;
+      background: white;
+      padding: 34px;
+      border-radius: 32px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .about-box p {
+      color: var(--muted);
+      font-size: 1.08rem;
+      margin-bottom: 16px;
+    }
+
+    .about-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    footer {
+      padding: 34px 24px;
+      background: #202124;
+      color: white;
+      text-align: center;
+    }
+
+    footer p {
+      color: #bdc1c6;
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    .disclaimer {
+      max-width: 760px;
+      margin: 12px auto 0;
+      font-size: 0.85rem;
+      color: #9aa0a6;
+    }
+
+    @media (max-width: 1100px) {
+      .shopping-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero-container,
+      .form-grid,
+      .grid,
+      .example-list {
+        grid-template-columns: 1fr;
+      }
+
+      .shopping-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero {
+        padding-top: 60px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+
+      .hero-card {
+        animation: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .shopping-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .idea-row {
+        grid-template-columns: 1fr;
+      }
+
+      .shopping-title {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .tool-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <div class="logo">
+        <span>G</span><span>i</span><span>f</span><span>t</span>match.ai
+      </div>
+      <div class="nav-links">
+        <a href="#tool">Try it</a>
+        <a href="#how">How it works</a>
+        <a href="#safe">Safe shopping</a>
+        <a href="#about">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-container">
+      <div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          Creative student project
+        </div>
+
+        <h1>
+          <span class="color-blue">Gift</span><span class="color-red">match</span><span class="color-yellow">.</span><span class="color-green">ai</span>
+        </h1>
+
+        <div class="subtitle">Describe someone. Discover the perfect gift.</div>
+
+        <p class="hero-text">
+          Giftmatch.ai helps you find thoughtful gift ideas for your sister, brother,
+          parents, friends, classmates, teachers, or cousins. Add a few details,
+          choose filters, and get creative AI-style suggestions with shopping-style result cards.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#tool" class="btn btn-primary">Find Gift Ideas</a>
+          <a href="#examples" class="btn btn-secondary">See Examples</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="mini-search">
+          <p>Example search</p>
+          <strong>“My 12-year-old sister likes Lego, animals, and drawing.”</strong>
+        </div>
+
+        <div class="preview-gift">
+          <div class="preview-item">
+            <div class="icon blue">🎨</div>
+            <div>
+              <strong>95% match - Creative Drawing Kit</strong>
+              <p>Perfect for art, imagination, and quiet creative time.</p>
+            </div>
+          </div>
+
+          <div class="preview-item">
+            <div class="icon yellow">🧱</div>
+            <div>
+              <strong>92% match - Lego Animal Set</strong>
+              <p>Combines building, animals, and creativity.</p>
+            </div>
+          </div>
+
+          <div class="preview-item">
+            <div class="icon green">🐾</div>
+            <div>
+              <strong>88% match - Animal Gift Box</strong>
+              <p>A cute, safe, and personal gift idea.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="tool" class="gift-tool">
+    <div class="section-container">
+      <h2 class="section-title">Smart Gift Finder</h2>
+      <p class="section-subtitle">
+        First you will see a small loading bar, then a clear gift idea list with match percentages,
+        and underneath it shopping-style cards with photos and trusted shop links.
+      </p>
+
+      <div class="tool-card">
+        <label for="description">Describe the person</label>
+        <textarea id="description" placeholder="Example: My sister is 12 years old. She likes Lego, animals, drawing, cute things, and creative activities."></textarea>
+
+        <div class="form-grid">
+          <div>
+            <label for="receiver">Who is the gift for?</label>
+            <select id="receiver">
+              <option>sister</option>
+              <option>brother</option>
+              <option>mother</option>
+              <option>father</option>
+              <option>friend</option>
+              <option>cousin</option>
+              <option>teacher</option>
+              <option>classmate</option>
+              <option>grandmother</option>
+              <option>grandfather</option>
+              <option>baby</option>
+              <option>other</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="age">Age group</label>
+            <select id="age">
+              <option>0–5 years</option>
+              <option>5–10 years</option>
+              <option selected>10–13 years</option>
+              <option>13–16 years</option>
+              <option>16–18 years</option>
+              <option>18–25 years</option>
+              <option>25–40 years</option>
+              <option>40–60 years</option>
+              <option>60+ years</option>
+              <option>any age</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="gender">Gender</label>
+            <select id="gender">
+              <option>girl</option>
+              <option>boy</option>
+              <option>woman</option>
+              <option>man</option>
+              <option>any</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="budget">Budget</label>
+            <select id="budget">
+              <option>under CHF 20</option>
+              <option>CHF 20–50</option>
+              <option selected>CHF 50–100</option>
+              <option>CHF 100–250</option>
+              <option>CHF 250–500</option>
+              <option>CHF 500–1'000</option>
+              <option>CHF 1'000–3'000</option>
+              <option>CHF 3'000–7'500</option>
+              <option>CHF 7'500–15'000</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="region">Country / shop region</label>
+            <select id="region" onchange="handleCountryChange()">
+              <option value="" selected>Select country first</option>
+              <option>Switzerland</option>
+              <option>Germany</option>
+              <option>Austria</option>
+              <option>France</option>
+              <option>Italy</option>
+              <option>Spain</option>
+              <option>Netherlands</option>
+              <option>Belgium</option>
+              <option>United Kingdom</option>
+              <option>Ireland</option>
+              <option>United States</option>
+              <option>Canada</option>
+              <option>Australia</option>
+              <option>New Zealand</option>
+              <option>India</option>
+              <option>Sri Lanka</option>
+              <option>Singapore</option>
+              <option>Japan</option>
+              <option>South Korea</option>
+              <option>United Arab Emirates</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="store-filter-box" onclick="handleStoreAreaClick()">
+            <label for="storeFilter">Online store</label>
+            <select id="storeFilter" disabled>
+              <option value="">First select country</option>
+            </select>
+            <div class="store-message" id="storeMessage">
+              Please select a country first.
+            </div>
+          </div>
+        </div>
+
+        <label>Interests</label>
+        <div class="interest-box" id="interestBox"></div>
+
+        <div class="learning-note" id="learningInfo">
+          Smart learning is active. If a new interest is searched 50 times on this browser, it will automatically appear in the interests list. Maximum: 100 interests.
+        </div>
+
+        <button class="btn btn-primary" onclick="startGiftSearch()">Find Gift Ideas</button>
+
+        <div class="loading-panel" id="loadingPanel">
+          <div class="loading-top">
+            <div class="loading-title" id="loadingTitle">Understanding the person...</div>
+            <div class="loading-percent" id="loadingPercent">0%</div>
+          </div>
+          <div class="loading-track">
+            <div class="loading-bar" id="loadingBar"></div>
+          </div>
+          <div class="loading-steps" id="loadingSteps">Checking interests, age, budget, and safe shops.</div>
+        </div>
+
+        <div class="result-area" id="resultArea">
+          <div class="match-summary">
+            <h3>Best gift ideas</h3>
+            <div class="idea-list" id="ideaList"></div>
+          </div>
+
+          <div class="shopping-title">
+            <div>
+              <h3>Shopping results</h3>
+              <p>These are curated direct product examples with example CHF prices. Always check the live store page before buying.</p>
+            </div>
+          </div>
+
+          <div class="shopping-grid" id="shoppingGrid"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="section-container">
+      <h2 class="section-title">How it works</h2>
+      <p class="section-subtitle">
+        A simple three-step process to make gift searching easier and more creative.
+      </p>
+
+      <div class="grid">
+        <div class="info-card">
+          <div class="icon blue">1</div>
+          <h3>Describe the person</h3>
+          <p>Write a few details about the person, such as age, hobbies, personality, and interests.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="icon yellow">2</div>
+          <h3>Choose smart filters</h3>
+          <p>Select relationship, budget up to CHF 15'000, age group, interests, and country.</p>
+        </div>
+
+        <div class="info-card">
+          <div class="icon green">3</div>
+          <h3>See matches and links</h3>
+          <p>Get gift ideas with match percentages, then browse shopping-style result cards.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-container">
+      <h2 class="section-title">Why Giftmatch.ai?</h2>
+      <p class="section-subtitle">
+        Finding gifts can be stressful. Giftmatch.ai makes the process simple,
+        fun, safe, and creative.
+      </p>
+
+      <div class="grid">
+        <div class="info-card">
+          <h3>Personal ideas</h3>
+          <p>Suggestions are based on the person’s interests, not just random products.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>Teen-friendly</h3>
+          <p>The design is simple and easy for students, teenagers, and families to use.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>No login needed</h3>
+          <p>The website is static, fast, free to host, and does not require accounts or passwords.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="safe" class="gift-tool">
+    <div class="section-container">
+      <h2 class="section-title">Safe shopping</h2>
+      <p class="section-subtitle">
+        Giftmatch.ai shows trusted shopping examples and avoids unsafe or suspicious shops.
+      </p>
+
+      <div class="grid">
+        <div class="info-card">
+          <h3>Trusted examples</h3>
+          <p>Links may point to Amazon, Galaxus, Digitec, Migros, Coop, Manor, Smyths Toys, Ochsner Sport, Sports Direct, Argos, Target, Walmart, Best Buy, Decathlon, Fnac, Bol, and similar trusted shops.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>Unsafe shops avoided</h3>
+          <p>The website avoids Temu, AliExpress, fake shops, illegal shops, or suspicious websites.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>Always check yourself</h3>
+          <p>Prices, availability, delivery, safety, and reviews should always be checked before buying.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-container">
+      <h2 class="section-title">Popular gift categories</h2>
+      <p class="section-subtitle">
+        Explore gift directions based on different interests.
+      </p>
+
+      <div class="category-row">
+        <div class="category">🎮 Gaming</div>
+        <div class="category">⚽ Sports</div>
+        <div class="category">🎨 Art</div>
+        <div class="category">📚 Books</div>
+        <div class="category">🧱 Lego</div>
+        <div class="category">🎧 Music</div>
+        <div class="category">💻 Technology</div>
+        <div class="category">🐾 Animals</div>
+        <div class="category">🌲 Outdoor</div>
+        <div class="category">🍫 Food</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="examples" class="examples">
+    <div class="section-container">
+      <h2 class="section-title">Example searches</h2>
+      <p class="section-subtitle">
+        Click an example to try it in the gift finder.
+      </p>
+
+      <div class="example-list">
+        <div class="example" onclick="useExample('My 12-year-old sister likes Lego, animals, and drawing.')">
+          My 12-year-old sister likes Lego, animals, and drawing.
+        </div>
+
+        <div class="example" onclick="useExample('My dad loves hiking and coffee.')">
+          My dad loves hiking and coffee.
+        </div>
+
+        <div class="example" onclick="useExample('My friend is into football and gaming.')">
+          My friend is into football and gaming.
+        </div>
+
+        <div class="example" onclick="useExample('My mum likes cooking, flowers, and relaxing.')">
+          My mum likes cooking, flowers, and relaxing.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="section-container">
+      <div class="about-box">
+        <h2 class="section-title">About</h2>
+        <p>
+          My name is Aarye Premathilaka. I am 14 years old and I live in Zug, Switzerland.
+          Giftmatch.ai is my creative student project. The idea came from a real problem:
+          sometimes it is difficult to find the right gift for someone, even when you know
+          that person well.
+        </p>
+        <p>
+          This website was created with the help of AI. I designed the idea, wrote the prompts,
+          improved the features, and guided the project step by step. The style is inspired by
+          clean and modern Google-like product design, but Giftmatch.ai is not an official
+          Google product.
+        </p>
+        <p>
+          I am very interested in technology, problem solving, and application development.
+          My goal is to get a Lehrstelle in 2027 as an Informatiker Applikationsentwickler
+          at Google Schweiz GmbH. With this project, I want to show my motivation, creativity,
+          and ability to build something useful from an idea.
+        </p>
+        <p>
+          I am thankful to Google for inspiring many young people like me with useful products,
+          smart ideas, and modern technology. I hope Giftmatch.ai shows that I am serious,
+          curious, and ready to keep learning.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h2>Giftmatch.ai</h2>
+    <p>Creative gift ideas made simple.</p>
+    <p class="disclaimer">
+      Disclaimer: Shopping links are only examples. Always check safety, price, and availability yourself.
+    </p>
+  </footer>
+
+  <script>
+    const BASE_INTERESTS = [
+      "sports", "gaming", "books", "art", "music", "Lego", "fashion", "technology",
+      "animals", "beauty", "school", "outdoor", "food", "creativity", "hiking",
+      "coffee", "cooking", "relaxing"
+    ];
+
+    const LEARN_THRESHOLD = 50;
+    const MAX_INTERESTS = 100;
+    const STORAGE_KEY = "giftmatchLearnedInterestsV1";
+
+    const PRODUCT_CATALOG = [
+      {
+            "name": "LEGO Classic Grosse Bausteine-Box 10698",
+            "store": "Galaxus",
+            "priceChf": 31.9,
+            "url": "https://www.galaxus.ch/de/s5/product/lego-classic-grosse-bausteine-box-10698-lego-classic-lego-5297227",
+            "image": "https://source.unsplash.com/600x400/?lego,bricks,toy",
+            "terms": [
+                  "lego",
+                  "building",
+                  "blocks",
+                  "creativity",
+                  "creative",
+                  "toy",
+                  "toys",
+                  "kids",
+                  "child"
+            ],
+            "reason": "A real LEGO set with many bricks, good for creative children and teenagers.",
+            "minAge": 4,
+            "maxAge": 16
+      },
+      {
+            "name": "Schleich Wild Life Afrika Starter-Set",
+            "store": "Galaxus",
+            "priceChf": 19.7,
+            "url": "https://www.galaxus.ch/de/s5/product/schleich-wild-life-afrika-starter-set-spielzeugfigur-48985808",
+            "image": "https://source.unsplash.com/600x400/?animal,toy,figure",
+            "terms": [
+                  "animals",
+                  "animal",
+                  "wildlife",
+                  "nature",
+                  "safari",
+                  "toy",
+                  "toys",
+                  "kids"
+            ],
+            "reason": "A specific animal figure set for someone who likes animals and imaginative play.",
+            "minAge": 3,
+            "maxAge": 13
+      },
+      {
+            "name": "Faber-Castell CASTELL 9000 HB Pencil Set, 12 pieces",
+            "store": "Galaxus",
+            "priceChf": 13.9,
+            "url": "https://www.galaxus.ch/it/s12/product/matite-castell-9000-hb-verde-12-pezzi-hb-12x-matite-32246006",
+            "image": "https://source.unsplash.com/600x400/?pencils,drawing,art",
+            "terms": [
+                  "art",
+                  "drawing",
+                  "draw",
+                  "sketch",
+                  "school",
+                  "creative",
+                  "creativity",
+                  "pencil",
+                  "pencils"
+            ],
+            "reason": "A real drawing and school item for someone who likes sketching or creative work.",
+            "minAge": 6,
+            "maxAge": 99
+      },
+      {
+            "name": "Nike STRIKE TEAM SOCCER BALL Size 5",
+            "store": "Galaxus",
+            "priceChf": 26.9,
+            "url": "https://www.galaxus.ch/en/s3/product/nike-strike-team-soccer-ball-whitebright-crimsonsilver-size-5-5-football-balls-24568686",
+            "image": "https://source.unsplash.com/600x400/?football,soccer,ball",
+            "terms": [
+                  "sports",
+                  "sport",
+                  "football",
+                  "soccer",
+                  "outdoor",
+                  "training"
+            ],
+            "reason": "A clear physical gift for someone who enjoys football or outdoor sports.",
+            "minAge": 6,
+            "maxAge": 99
+      },
+      {
+            "name": "Logitech G G502 Hero Gaming Mouse",
+            "store": "Galaxus",
+            "priceChf": 43.0,
+            "url": "https://www.galaxus.ch/de/s1/product/logitech-g-g502-hero-kabelgebunden-maus-9621054",
+            "image": "https://source.unsplash.com/600x400/?gaming,mouse,computer",
+            "terms": [
+                  "gaming",
+                  "game",
+                  "games",
+                  "pc",
+                  "computer",
+                  "technology",
+                  "tech",
+                  "mouse"
+            ],
+            "reason": "A specific gaming mouse for someone who plays on a computer.",
+            "minAge": 10,
+            "maxAge": 99
+      },
+      {
+            "name": "Nintendo Joy-Con Set Blue/Red",
+            "store": "Galaxus",
+            "priceChf": 61.9,
+            "url": "https://www.galaxus.ch/de/s1/product/nintendo-joy-con-set-bluered-switch-gaming-controller-6072022",
+            "image": "https://source.unsplash.com/600x400/?nintendo,controller,gaming",
+            "terms": [
+                  "gaming",
+                  "game",
+                  "games",
+                  "nintendo",
+                  "switch",
+                  "controller",
+                  "technology"
+            ],
+            "reason": "A concrete controller gift for someone who owns or likes Nintendo Switch.",
+            "minAge": 7,
+            "maxAge": 99
+      },
+      {
+            "name": "Sony WH-CH520 Wireless Headphones",
+            "store": "Galaxus",
+            "priceChf": 25.9,
+            "url": "https://www.galaxus.ch/en/s1/product/sony-wh-ch520-no-noise-cancellation-50-h-wireless-headphones-24181271",
+            "image": "https://source.unsplash.com/600x400/?headphones,music",
+            "terms": [
+                  "music",
+                  "song",
+                  "headphones",
+                  "audio",
+                  "technology",
+                  "relaxing"
+            ],
+            "reason": "A real headphone product for music, videos, school, or relaxing.",
+            "minAge": 10,
+            "maxAge": 99
+      },
+      {
+            "name": "Mattel Games UNO Card Game",
+            "store": "Galaxus",
+            "priceChf": 8.7,
+            "url": "https://www.galaxus.ch/en/s5/product/mattel-games-uno-card-game-english-2-10-players-card-games-312379",
+            "image": "https://source.unsplash.com/600x400/?card,game,family",
+            "terms": [
+                  "games",
+                  "game",
+                  "family",
+                  "relaxing",
+                  "cards",
+                  "school",
+                  "friend",
+                  "friends"
+            ],
+            "reason": "A small exact gift that works for friends, classmates, and family game time.",
+            "minAge": 7,
+            "maxAge": 99
+      },
+      {
+            "name": "Apple AirTag 1 Pack",
+            "store": "Galaxus",
+            "priceChf": 23.9,
+            "url": "https://www.galaxus.ch/de/s1/product/apple-airtag-1-pack-ios-tracker-15711579",
+            "image": "https://source.unsplash.com/600x400/?tracker,key,technology",
+            "terms": [
+                  "technology",
+                  "tech",
+                  "gadget",
+                  "travel",
+                  "school",
+                  "bag",
+                  "keys",
+                  "useful"
+            ],
+            "reason": "A useful tech gift for someone who often loses keys, bags, or school items.",
+            "minAge": 13,
+            "maxAge": 99
+      },
+      {
+            "name": "Fujifilm Instax Mini 12 Instant Camera",
+            "store": "Galaxus",
+            "priceChf": 69.9,
+            "url": "https://www.galaxus.ch/de/s1/product/fujifilm-instax-mini-12-sofortbildkamera-24486167",
+            "image": "https://source.unsplash.com/600x400/?instant,camera,photography",
+            "terms": [
+                  "photography",
+                  "camera",
+                  "photos",
+                  "fashion",
+                  "creative",
+                  "creativity",
+                  "friends"
+            ],
+            "reason": "A specific camera gift for someone who likes photos, memories, and creative moments.",
+            "minAge": 10,
+            "maxAge": 99
+      },
+      {
+            "name": "Hydro Flask 21 oz Standard Mouth Bottle",
+            "store": "Galaxus",
+            "priceChf": 35.7,
+            "url": "https://www.galaxus.ch/en/s3/product/hydro-flask-21-oz-standard-mouth-062-l-water-bottles-thermos-flasks-48037336",
+            "image": "https://source.unsplash.com/600x400/?water,bottle,outdoor",
+            "terms": [
+                  "sports",
+                  "sport",
+                  "outdoor",
+                  "hiking",
+                  "school",
+                  "water",
+                  "bottle",
+                  "fitness"
+            ],
+            "reason": "A real bottle gift for school, hiking, sports, and everyday use.",
+            "minAge": 8,
+            "maxAge": 99
+      },
+      {
+            "name": "Stanley 1913 Quencher H2.0 FlowState 1.20 l",
+            "store": "Galaxus",
+            "priceChf": 42.7,
+            "url": "https://www.galaxus.ch/de/s3/product/stanley-1913-quencher-h20-flowstate-120-l-trinkflasche-thermosflasche-44766591",
+            "image": "https://source.unsplash.com/600x400/?tumbler,bottle,drink",
+            "terms": [
+                  "fashion",
+                  "beauty",
+                  "school",
+                  "outdoor",
+                  "water",
+                  "bottle",
+                  "relaxing"
+            ],
+            "reason": "A popular practical bottle/tumbler for school, travel, and daily life.",
+            "minAge": 10,
+            "maxAge": 99
+      },
+      {
+            "name": "Dyson V8 Absolute Cordless Vacuum Cleaner",
+            "store": "Galaxus",
+            "priceChf": 345.0,
+            "url": "https://www.galaxus.ch/en/s2/product/dyson-v8-absolute-vacuum-cleaners-32976431",
+            "image": "https://source.unsplash.com/600x400/?vacuum,cleaner,home",
+            "terms": [
+                  "home",
+                  "cleaning",
+                  "vacuum",
+                  "staubsauger",
+                  "technology",
+                  "mother",
+                  "father",
+                  "adult"
+            ],
+            "reason": "A premium practical gift idea for an adult who likes useful home technology.",
+            "minAge": 18,
+            "maxAge": 99
+      },
+      {
+            "name": "Nerf Super Soaker Twister Water Blaster",
+            "store": "Galaxus",
+            "priceChf": 24.0,
+            "url": "https://www.galaxus.ch/en/s5/product/nerf-super-soaker-twister-water-pistols-18345676",
+            "image": "https://source.unsplash.com/600x400/?water,blaster,summer,toy",
+            "terms": [
+                  "water guns",
+                  "water gun",
+                  "water pistol",
+                  "summer",
+                  "outdoor",
+                  "sports",
+                  "toy",
+                  "toys"
+            ],
+            "reason": "A specific outdoor water toy for summer play and active fun.",
+            "minAge": 6,
+            "maxAge": 16
+      },
+      {
+            "name": "Hot Wheels City Track Pack",
+            "store": "Galaxus",
+            "priceChf": 34.0,
+            "url": "https://www.galaxus.ch/de/s5/product/hot-wheels-city-track-pack-autorennbahn-18553939",
+            "image": "https://source.unsplash.com/600x400/?toy,cars,track",
+            "terms": [
+                  "cars",
+                  "car",
+                  "vehicles",
+                  "hot wheels",
+                  "toy",
+                  "toys",
+                  "racing"
+            ],
+            "reason": "A specific toy car track set for someone who likes cars and racing play.",
+            "minAge": 4,
+            "maxAge": 13
+      },
+      {
+            "name": "Raspberry Pi Pico Essentials",
+            "store": "Galaxus",
+            "priceChf": 27.7,
+            "url": "https://www.galaxus.ch/en/s1/product/raspberry-pi-pico-essentials-development-boards-kits-35200807",
+            "image": "https://source.unsplash.com/600x400/?electronics,coding,robotics",
+            "terms": [
+                  "coding",
+                  "programming",
+                  "robotics",
+                  "technology",
+                  "tech",
+                  "electronics",
+                  "school"
+            ],
+            "reason": "A real electronics starter item for someone interested in coding or robotics.",
+            "minAge": 12,
+            "maxAge": 99
+      },
+      {
+            "name": "Philos Chess Set",
+            "store": "Galaxus",
+            "priceChf": 43.9,
+            "url": "https://www.galaxus.ch/en/s5/product/philos-chess-set-chess-8985854",
+            "image": "https://source.unsplash.com/600x400/?chess,set,board",
+            "terms": [
+                  "chess",
+                  "strategy",
+                  "books",
+                  "school",
+                  "relaxing",
+                  "brain"
+            ],
+            "reason": "A real chess set for someone who enjoys strategy, calm thinking, and board games.",
+            "minAge": 7,
+            "maxAge": 99
+      },
+      {
+            "name": "Ravensburger Puzzle 1000 Casa Batlló Barcelona",
+            "store": "Galaxus",
+            "priceChf": 14.9,
+            "url": "https://www.galaxus.ch/it/s5/product/ravensburger-puzzle-1000-casa-batll-barcelona-1000-pezzi-puzzle-54619047",
+            "image": "https://source.unsplash.com/600x400/?puzzle,table",
+            "terms": [
+                  "puzzles",
+                  "puzzle",
+                  "relaxing",
+                  "books",
+                  "art",
+                  "family",
+                  "creativity"
+            ],
+            "reason": "A specific puzzle gift for quiet time, relaxing, and concentration.",
+            "minAge": 14,
+            "maxAge": 99
+      }
+];
+
+
+    const STORE_OPTIONS = {
+      "Switzerland": [
+        "Any trusted store",
+        "Galaxus",
+        "Digitec",
+        "Brack",
+        "Microspot",
+        "Manor",
+        "Migros",
+        "Coop",
+        "Interdiscount",
+        "Ochsner Sport",
+        "Decathlon Switzerland",
+        "Ex Libris",
+        "Fust",
+        "MediaMarkt Switzerland",
+        "Zalando Switzerland",
+        "LEGO official website",
+        "Amazon.de"
+      ],
+      "Germany": [
+        "Any trusted store",
+        "Amazon.de",
+        "LEGO official website",
+        "MediaMarkt",
+        "Saturn",
+        "Otto",
+        "Zalando Germany",
+        "Decathlon Germany",
+        "Thalia",
+        "IKEA Germany",
+        "Conrad",
+        "Cyberport",
+        "Alternate",
+        "Müller",
+        "dm Germany"
+      ],
+      "Austria": [
+        "Any trusted store",
+        "Amazon.de",
+        "LEGO official website",
+        "MediaMarkt Austria",
+        "Saturn Austria",
+        "Zalando Austria",
+        "Decathlon Austria",
+        "Thalia Austria",
+        "IKEA Austria",
+        "dm Austria",
+        "Intersport Austria"
+      ],
+      "France": [
+        "Any trusted store",
+        "Amazon.fr",
+        "LEGO official website",
+        "Fnac",
+        "Darty",
+        "Cdiscount",
+        "Decathlon France",
+        "Boulanger",
+        "Carrefour France",
+        "Auchan",
+        "La Redoute",
+        "Sephora France"
+      ],
+      "Italy": [
+        "Any trusted store",
+        "Amazon.it",
+        "LEGO official website",
+        "MediaWorld",
+        "Unieuro",
+        "Decathlon Italy",
+        "Euronics Italy",
+        "Zalando Italy",
+        "Feltrinelli",
+        "IKEA Italy",
+        "Sephora Italy"
+      ],
+      "Spain": [
+        "Any trusted store",
+        "Amazon.es",
+        "LEGO official website",
+        "MediaMarkt Spain",
+        "El Corte Inglés",
+        "Fnac Spain",
+        "Decathlon Spain",
+        "Carrefour Spain",
+        "Zalando Spain",
+        "IKEA Spain"
+      ],
+      "Netherlands": [
+        "Any trusted store",
+        "Bol",
+        "Amazon.nl",
+        "LEGO official website",
+        "Coolblue",
+        "MediaMarkt Netherlands",
+        "Decathlon Netherlands",
+        "Hema",
+        "Zalando Netherlands",
+        "IKEA Netherlands"
+      ],
+      "Belgium": [
+        "Any trusted store",
+        "Bol",
+        "Amazon.com.be",
+        "LEGO official website",
+        "Coolblue Belgium",
+        "MediaMarkt Belgium",
+        "Decathlon Belgium",
+        "Fnac Belgium",
+        "Vanden Borre",
+        "Zalando Belgium",
+        "IKEA Belgium"
+      ],
+      "United Kingdom": [
+        "Any trusted store",
+        "Amazon UK",
+        "Argos",
+        "Smyths Toys",
+        "Sports Direct",
+        "John Lewis",
+        "Currys",
+        "Very",
+        "Waterstones",
+        "GAME UK",
+        "LEGO official website",
+        "Marks & Spencer",
+        "Boots UK"
+      ],
+      "Ireland": [
+        "Any trusted store",
+        "Amazon UK",
+        "Smyths Toys Ireland",
+        "Sports Direct Ireland",
+        "Argos Ireland",
+        "Currys Ireland",
+        "Eason",
+        "Brown Thomas",
+        "LEGO official website"
+      ],
+      "United States": [
+        "Any trusted store",
+        "Amazon",
+        "Target",
+        "Walmart",
+        "Best Buy",
+        "LEGO official website",
+        "Macy's",
+        "Nordstrom",
+        "Barnes & Noble",
+        "GameStop",
+        "Dick's Sporting Goods",
+        "Nike",
+        "Apple Store",
+        "Costco",
+        "IKEA USA"
+      ],
+      "Canada": [
+        "Any trusted store",
+        "Amazon Canada",
+        "Walmart Canada",
+        "Best Buy Canada",
+        "Canadian Tire",
+        "Sport Chek",
+        "Chapters Indigo",
+        "The Bay",
+        "LEGO official website",
+        "IKEA Canada"
+      ],
+      "Australia": [
+        "Any trusted store",
+        "Amazon Australia",
+        "Kmart Australia",
+        "JB Hi-Fi",
+        "Big W",
+        "Target Australia",
+        "Officeworks",
+        "Myer",
+        "David Jones",
+        "The Good Guys",
+        "LEGO official website"
+      ],
+      "New Zealand": [
+        "Any trusted store",
+        "Mighty Ape",
+        "The Warehouse",
+        "Noel Leeming",
+        "JB Hi-Fi New Zealand",
+        "Farmers",
+        "Whitcoulls",
+        "Rebel Sport NZ",
+        "LEGO official website"
+      ],
+      "India": [
+        "Any trusted store",
+        "Amazon India",
+        "Flipkart",
+        "Myntra",
+        "Tata CLiQ",
+        "Croma",
+        "Reliance Digital",
+        "Decathlon India",
+        "Hamleys India",
+        "LEGO official website"
+      ],
+      "Sri Lanka": [
+        "Any trusted store",
+        "Daraz Sri Lanka",
+        "Kapruka",
+        "Takaski",
+        "Singer Sri Lanka",
+        "Abans",
+        "Softlogic Glomark",
+        "ODEL",
+        "Cool Planet",
+        "Sarasavi Bookshop"
+      ],
+      "Singapore": [
+        "Any trusted store",
+        "Amazon Singapore",
+        "Lazada Singapore",
+        "Shopee Singapore",
+        "Decathlon Singapore",
+        "Courts Singapore",
+        "Popular Singapore",
+        "Takashimaya Singapore",
+        "LEGO official website"
+      ],
+      "Japan": [
+        "Any trusted store",
+        "Amazon Japan",
+        "Rakuten",
+        "Bic Camera",
+        "Yodobashi Camera",
+        "Uniqlo Japan",
+        "Toysrus Japan",
+        "LEGO official website"
+      ],
+      "South Korea": [
+        "Any trusted store",
+        "Coupang",
+        "Gmarket",
+        "11Street",
+        "Lotte ON",
+        "SSG",
+        "Kyobo Book Centre",
+        "LEGO official website"
+      ],
+      "United Arab Emirates": [
+        "Any trusted store",
+        "Amazon UAE",
+        "Noon",
+        "Sharaf DG",
+        "Carrefour UAE",
+        "Virgin Megastore UAE",
+        "Mumzworld",
+        "LEGO official website"
+      ],
+      "Other": [
+        "Any trusted store",
+        "Amazon",
+        "LEGO official website",
+        "Google Shopping",
+        "Decathlon",
+        "IKEA",
+        "Apple Store",
+        "Nike",
+        "Adidas",
+        "Sephora",
+        "Waterstones"
+      ]
+    };
+
+    const STORE_PRODUCT_LINKS = {
+      "Galaxus": {
+        "default": "https://www.galaxus.ch/search?q="
+      },
+      "Digitec": {
+        "default": "https://www.digitec.ch/search?q="
+      },
+      "Brack": {
+        "default": "https://www.brack.ch/search?query="
+      },
+      "Microspot": {
+        "default": "https://www.microspot.ch/de/search?query="
+      },
+      "Manor": {
+        "default": "https://www.manor.ch/en/search?q="
+      },
+      "Migros": {
+        "default": "https://www.migros.ch/en/search?query="
+      },
+      "Coop": {
+        "default": "https://www.coop.ch/en/search/?text="
+      },
+      "Interdiscount": {
+        "default": "https://www.interdiscount.ch/de/search?q="
+      },
+      "Ochsner Sport": {
+        "default": "https://www.ochsnersport.ch/en/shop/search?q="
+      },
+      "Decathlon Switzerland": {
+        "default": "https://www.decathlon.ch/search?query="
+      },
+      "Ex Libris": {
+        "default": "https://www.exlibris.ch/de/suche?searchtype=phrase&searchphrase="
+      },
+      "Fust": {
+        "default": "https://www.fust.ch/de/suche.html?query="
+      },
+      "MediaMarkt Switzerland": {
+        "default": "https://www.mediamarkt.ch/de/search.html?query="
+      },
+      "Zalando Switzerland": {
+        "default": "https://www.zalando.ch/catalog/?q="
+      },
+      "LEGO official website": {
+        "LEGO Classic Grosse Bausteine-Box 10698": "https://www.lego.com/en-ch/product/lego-large-creative-brick-box-10698",
+        "default": "https://www.lego.com/en-ch/search?q="
+      },
+      "Amazon.de": {
+        "default": "https://www.amazon.de/s?k="
+      },
+      "MediaMarkt": {
+        "default": "https://www.mediamarkt.de/de/search.html?query="
+      },
+      "Saturn": {
+        "default": "https://www.saturn.de/de/search.html?query="
+      },
+      "Otto": {
+        "default": "https://www.otto.de/suche/"
+      },
+      "Zalando Germany": {
+        "default": "https://www.zalando.de/catalog/?q="
+      },
+      "Decathlon Germany": {
+        "default": "https://www.decathlon.de/search?Ntt="
+      },
+      "Thalia": {
+        "default": "https://www.thalia.de/suche?sq="
+      },
+      "IKEA Germany": {
+        "default": "https://www.ikea.com/de/de/search/?q="
+      },
+      "Conrad": {
+        "default": "https://www.conrad.de/de/search.html?search="
+      },
+      "Cyberport": {
+        "default": "https://www.cyberport.de/tools/search-results.html?autosuggest=false&q="
+      },
+      "Alternate": {
+        "default": "https://www.alternate.de/listing.xhtml?q="
+      },
+      "Müller": {
+        "default": "https://www.mueller.de/search/?q="
+      },
+      "dm Germany": {
+        "default": "https://www.dm.de/search?query="
+      },
+      "MediaMarkt Austria": {
+        "default": "https://www.mediamarkt.at/de/search.html?query="
+      },
+      "Saturn Austria": {
+        "default": "https://www.saturn.at/de/search.html?query="
+      },
+      "Zalando Austria": {
+        "default": "https://www.zalando.at/catalog/?q="
+      },
+      "Decathlon Austria": {
+        "default": "https://www.decathlon.at/search?Ntt="
+      },
+      "Thalia Austria": {
+        "default": "https://www.thalia.at/suche?sq="
+      },
+      "IKEA Austria": {
+        "default": "https://www.ikea.com/at/de/search/?q="
+      },
+      "dm Austria": {
+        "default": "https://www.dm.at/search?query="
+      },
+      "Intersport Austria": {
+        "default": "https://www.intersport.at/search?q="
+      },
+      "Amazon.fr": {
+        "default": "https://www.amazon.fr/s?k="
+      },
+      "Fnac": {
+        "default": "https://www.fnac.com/SearchResult/ResultList.aspx?Search="
+      },
+      "Darty": {
+        "default": "https://www.darty.com/nav/recherche/"
+      },
+      "Cdiscount": {
+        "default": "https://www.cdiscount.com/search/10/"
+      },
+      "Decathlon France": {
+        "default": "https://www.decathlon.fr/search?Ntt="
+      },
+      "Boulanger": {
+        "default": "https://www.boulanger.com/resultats?tr="
+      },
+      "Carrefour France": {
+        "default": "https://www.carrefour.fr/s?q="
+      },
+      "Auchan": {
+        "default": "https://www.auchan.fr/recherche?text="
+      },
+      "La Redoute": {
+        "default": "https://www.laredoute.fr/pplp/100.aspx?searchkeyword="
+      },
+      "Sephora France": {
+        "default": "https://www.sephora.fr/search?q="
+      },
+      "Amazon.it": {
+        "default": "https://www.amazon.it/s?k="
+      },
+      "MediaWorld": {
+        "default": "https://www.mediaworld.it/it/search.html?query="
+      },
+      "Unieuro": {
+        "default": "https://www.unieuro.it/online/risultati-ricerca?text="
+      },
+      "Decathlon Italy": {
+        "default": "https://www.decathlon.it/search?Ntt="
+      },
+      "Euronics Italy": {
+        "default": "https://www.euronics.it/search/?q="
+      },
+      "Zalando Italy": {
+        "default": "https://www.zalando.it/catalog/?q="
+      },
+      "Feltrinelli": {
+        "default": "https://www.lafeltrinelli.it/search?query="
+      },
+      "IKEA Italy": {
+        "default": "https://www.ikea.com/it/it/search/?q="
+      },
+      "Sephora Italy": {
+        "default": "https://www.sephora.it/search?q="
+      },
+      "Amazon.es": {
+        "default": "https://www.amazon.es/s?k="
+      },
+      "MediaMarkt Spain": {
+        "default": "https://www.mediamarkt.es/es/search.html?query="
+      },
+      "El Corte Inglés": {
+        "default": "https://www.elcorteingles.es/search/?s="
+      },
+      "Fnac Spain": {
+        "default": "https://www.fnac.es/SearchResult/ResultList.aspx?Search="
+      },
+      "Decathlon Spain": {
+        "default": "https://www.decathlon.es/search?Ntt="
+      },
+      "Carrefour Spain": {
+        "default": "https://www.carrefour.es/search/?text="
+      },
+      "Zalando Spain": {
+        "default": "https://www.zalando.es/catalog/?q="
+      },
+      "IKEA Spain": {
+        "default": "https://www.ikea.com/es/es/search/?q="
+      },
+      "Bol": {
+        "default": "https://www.bol.com/nl/nl/s/?searchtext="
+      },
+      "Amazon.nl": {
+        "default": "https://www.amazon.nl/s?k="
+      },
+      "Coolblue": {
+        "default": "https://www.coolblue.nl/zoeken?query="
+      },
+      "MediaMarkt Netherlands": {
+        "default": "https://www.mediamarkt.nl/nl/search.html?query="
+      },
+      "Decathlon Netherlands": {
+        "default": "https://www.decathlon.nl/search?Ntt="
+      },
+      "Hema": {
+        "default": "https://www.hema.nl/zoeken?search="
+      },
+      "Zalando Netherlands": {
+        "default": "https://www.zalando.nl/catalog/?q="
+      },
+      "IKEA Netherlands": {
+        "default": "https://www.ikea.com/nl/nl/search/?q="
+      },
+      "Amazon.com.be": {
+        "default": "https://www.amazon.com.be/s?k="
+      },
+      "Coolblue Belgium": {
+        "default": "https://www.coolblue.be/nl/zoeken?query="
+      },
+      "MediaMarkt Belgium": {
+        "default": "https://www.mediamarkt.be/nl/search.html?query="
+      },
+      "Decathlon Belgium": {
+        "default": "https://www.decathlon.be/search?Ntt="
+      },
+      "Fnac Belgium": {
+        "default": "https://www.fr.fnac.be/SearchResult/ResultList.aspx?Search="
+      },
+      "Vanden Borre": {
+        "default": "https://www.vandenborre.be/search?query="
+      },
+      "Zalando Belgium": {
+        "default": "https://www.zalando.be/catalog/?q="
+      },
+      "IKEA Belgium": {
+        "default": "https://www.ikea.com/be/nl/search/?q="
+      },
+      "Amazon UK": {
+        "default": "https://www.amazon.co.uk/s?k="
+      },
+      "Argos": {
+        "default": "https://www.argos.co.uk/search/"
+      },
+      "Smyths Toys": {
+        "default": "https://www.smythstoys.com/uk/en-gb/search?text="
+      },
+      "Sports Direct": {
+        "default": "https://www.sportsdirect.com/searchresults?descriptionfilter="
+      },
+      "John Lewis": {
+        "default": "https://www.johnlewis.com/search?search-term="
+      },
+      "Currys": {
+        "default": "https://www.currys.co.uk/search?q="
+      },
+      "Very": {
+        "default": "https://www.very.co.uk/e/q/"
+      },
+      "Waterstones": {
+        "default": "https://www.waterstones.com/books/search/term/"
+      },
+      "GAME UK": {
+        "default": "https://www.game.co.uk/en/search?q="
+      },
+      "Marks & Spencer": {
+        "default": "https://www.marksandspencer.com/MSFindItemsByKeyword?searchTerm="
+      },
+      "Boots UK": {
+        "default": "https://www.boots.com/search/"
+      },
+      "Smyths Toys Ireland": {
+        "default": "https://www.smythstoys.com/ie/en-ie/search?text="
+      },
+      "Sports Direct Ireland": {
+        "default": "https://ie.sportsdirect.com/searchresults?descriptionfilter="
+      },
+      "Argos Ireland": {
+        "default": "https://www.argos.ie/search/"
+      },
+      "Currys Ireland": {
+        "default": "https://www.currys.ie/search?q="
+      },
+      "Eason": {
+        "default": "https://www.easons.com/search?q="
+      },
+      "Brown Thomas": {
+        "default": "https://www.brownthomas.com/search?q="
+      },
+      "Amazon": {
+        "default": "https://www.amazon.com/s?k="
+      },
+      "Target": {
+        "default": "https://www.target.com/s?searchTerm="
+      },
+      "Walmart": {
+        "default": "https://www.walmart.com/search?q="
+      },
+      "Best Buy": {
+        "default": "https://www.bestbuy.com/site/searchpage.jsp?st="
+      },
+      "Macy's": {
+        "default": "https://www.macys.com/shop/featured/"
+      },
+      "Nordstrom": {
+        "default": "https://www.nordstrom.com/sr?keyword="
+      },
+      "Barnes & Noble": {
+        "default": "https://www.barnesandnoble.com/s/"
+      },
+      "GameStop": {
+        "default": "https://www.gamestop.com/search/?q="
+      },
+      "Dick's Sporting Goods": {
+        "default": "https://www.dickssportinggoods.com/search/SearchDisplay?searchTerm="
+      },
+      "Nike": {
+        "default": "https://www.nike.com/w?q="
+      },
+      "Apple Store": {
+        "default": "https://www.apple.com/search/"
+      },
+      "Costco": {
+        "default": "https://www.costco.com/CatalogSearch?keyword="
+      },
+      "IKEA USA": {
+        "default": "https://www.ikea.com/us/en/search/?q="
+      },
+      "Amazon Canada": {
+        "default": "https://www.amazon.ca/s?k="
+      },
+      "Walmart Canada": {
+        "default": "https://www.walmart.ca/search?q="
+      },
+      "Best Buy Canada": {
+        "default": "https://www.bestbuy.ca/en-ca/search?search="
+      },
+      "Canadian Tire": {
+        "default": "https://www.canadiantire.ca/en/search-results.html?q="
+      },
+      "Sport Chek": {
+        "default": "https://www.sportchek.ca/search?q="
+      },
+      "Chapters Indigo": {
+        "default": "https://www.indigo.ca/en-ca/search?q="
+      },
+      "The Bay": {
+        "default": "https://www.thebay.com/search?q="
+      },
+      "IKEA Canada": {
+        "default": "https://www.ikea.com/ca/en/search/?q="
+      },
+      "Amazon Australia": {
+        "default": "https://www.amazon.com.au/s?k="
+      },
+      "Kmart Australia": {
+        "default": "https://www.kmart.com.au/search/?searchTerm="
+      },
+      "JB Hi-Fi": {
+        "default": "https://www.jbhifi.com.au/search?page=1&query="
+      },
+      "Big W": {
+        "default": "https://www.bigw.com.au/search?text="
+      },
+      "Target Australia": {
+        "default": "https://www.target.com.au/search?text="
+      },
+      "Officeworks": {
+        "default": "https://www.officeworks.com.au/shop/officeworks/search?q="
+      },
+      "Myer": {
+        "default": "https://www.myer.com.au/search?query="
+      },
+      "David Jones": {
+        "default": "https://www.davidjones.com/search?text="
+      },
+      "The Good Guys": {
+        "default": "https://www.thegoodguys.com.au/search?text="
+      },
+      "Mighty Ape": {
+        "default": "https://www.mightyape.co.nz/search?q="
+      },
+      "The Warehouse": {
+        "default": "https://www.thewarehouse.co.nz/search?q="
+      },
+      "Noel Leeming": {
+        "default": "https://www.noelleeming.co.nz/search?q="
+      },
+      "JB Hi-Fi New Zealand": {
+        "default": "https://www.jbhifi.co.nz/search?query="
+      },
+      "Farmers": {
+        "default": "https://www.farmers.co.nz/search?text="
+      },
+      "Whitcoulls": {
+        "default": "https://www.whitcoulls.co.nz/search?q="
+      },
+      "Rebel Sport NZ": {
+        "default": "https://www.rebelsport.co.nz/search?q="
+      },
+      "Amazon India": {
+        "default": "https://www.amazon.in/s?k="
+      },
+      "Flipkart": {
+        "default": "https://www.flipkart.com/search?q="
+      },
+      "Myntra": {
+        "default": "https://www.myntra.com/"
+      },
+      "Tata CLiQ": {
+        "default": "https://www.tatacliq.com/search/?searchCategory=all&text="
+      },
+      "Croma": {
+        "default": "https://www.croma.com/searchB?q="
+      },
+      "Reliance Digital": {
+        "default": "https://www.reliancedigital.in/search?q="
+      },
+      "Decathlon India": {
+        "default": "https://www.decathlon.in/search?query="
+      },
+      "Hamleys India": {
+        "default": "https://www.hamleys.in/search?q="
+      },
+      "Daraz Sri Lanka": {
+        "default": "https://www.daraz.lk/catalog/?q="
+      },
+      "Kapruka": {
+        "default": "https://www.kapruka.com/search.jsp?q="
+      },
+      "Takaski": {
+        "default": "https://takaski.com/search?q="
+      },
+      "Singer Sri Lanka": {
+        "default": "https://www.singersl.com/search?search="
+      },
+      "Abans": {
+        "default": "https://buyabans.com/search?search="
+      },
+      "Softlogic Glomark": {
+        "default": "https://glomark.lk/search?keyword="
+      },
+      "ODEL": {
+        "default": "https://odel.lk/search?q="
+      },
+      "Cool Planet": {
+        "default": "https://www.coolplanet.lk/catalogsearch/result/?q="
+      },
+      "Sarasavi Bookshop": {
+        "default": "https://www.sarasavi.lk/search?search="
+      },
+      "Amazon Singapore": {
+        "default": "https://www.amazon.sg/s?k="
+      },
+      "Lazada Singapore": {
+        "default": "https://www.lazada.sg/catalog/?q="
+      },
+      "Shopee Singapore": {
+        "default": "https://shopee.sg/search?keyword="
+      },
+      "Decathlon Singapore": {
+        "default": "https://www.decathlon.sg/search?query="
+      },
+      "Courts Singapore": {
+        "default": "https://www.courts.com.sg/catalogsearch/result/?q="
+      },
+      "Popular Singapore": {
+        "default": "https://www.popular.com.sg/catalogsearch/result/?q="
+      },
+      "Takashimaya Singapore": {
+        "default": "https://www.takashimaya.com.sg/search?q="
+      },
+      "Amazon Japan": {
+        "default": "https://www.amazon.co.jp/s?k="
+      },
+      "Rakuten": {
+        "default": "https://search.rakuten.co.jp/search/mall/"
+      },
+      "Bic Camera": {
+        "default": "https://www.biccamera.com/bc/category/?q="
+      },
+      "Yodobashi Camera": {
+        "default": "https://www.yodobashi.com/?word="
+      },
+      "Uniqlo Japan": {
+        "default": "https://www.uniqlo.com/jp/ja/search?q="
+      },
+      "Toysrus Japan": {
+        "default": "https://www.toysrus.co.jp/search/?q="
+      },
+      "Coupang": {
+        "default": "https://www.coupang.com/np/search?q="
+      },
+      "Gmarket": {
+        "default": "https://browse.gmarket.co.kr/search?keyword="
+      },
+      "11Street": {
+        "default": "https://search.11st.co.kr/Search.tmall?kwd="
+      },
+      "Lotte ON": {
+        "default": "https://www.lotteon.com/search/search/search.ecn?render=search&platform=pc&q="
+      },
+      "SSG": {
+        "default": "https://www.ssg.com/search.ssg?target=all&query="
+      },
+      "Kyobo Book Centre": {
+        "default": "https://search.kyobobook.co.kr/search?keyword="
+      },
+      "Amazon UAE": {
+        "default": "https://www.amazon.ae/s?k="
+      },
+      "Noon": {
+        "default": "https://www.noon.com/uae-en/search?q="
+      },
+      "Sharaf DG": {
+        "default": "https://uae.sharafdg.com/?s="
+      },
+      "Carrefour UAE": {
+        "default": "https://www.carrefouruae.com/mafuae/en/search?text="
+      },
+      "Virgin Megastore UAE": {
+        "default": "https://www.virginmegastore.ae/en/search?q="
+      },
+      "Mumzworld": {
+        "default": "https://www.mumzworld.com/en/search?query="
+      },
+      "Google Shopping": {
+        "default": "https://www.google.com/search?tbm=shop&q="
+      },
+      "Decathlon": {
+        "default": "https://www.decathlon.com/search?query="
+      },
+      "IKEA": {
+        "default": "https://www.ikea.com/search/?q="
+      },
+      "Adidas": {
+        "default": "https://www.adidas.com/search?q="
+      },
+      "Sephora": {
+        "default": "https://www.sephora.com/search?keyword="
+      }
+    };
+
+
+    const commonWords = new Set([
+      "gift", "present", "idea", "ideas", "buy", "likes", "like", "love", "loves",
+      "for", "and", "or", "the", "a", "an", "my", "his", "her", "their", "our",
+      "someone", "person", "people", "sister", "brother", "mother", "father",
+      "mum", "mom", "dad", "friend", "cousin", "teacher", "classmate", "girl",
+      "boy", "woman", "man", "child", "teenager", "adult", "years", "year",
+      "old", "very", "really", "nice", "cool", "small", "big", "new", "best",
+      "cheap", "expensive", "under", "over", "with", "without", "in", "on",
+      "to", "from", "is", "are", "was", "be", "has", "have", "also", "maybe"
+    ]);
+
+    const bannedInterestWords = new Set([
+      "weapon", "weapons", "knife", "knives", "gun", "guns", "ammo", "alcohol",
+      "beer", "wine", "vape", "vaping", "cigarette", "drug", "drugs", "casino",
+      "gambling", "adult"
+    ]);
+
+    const synonymMap = {
+      "car": "cars",
+      "cars": "cars",
+      "vehicle": "cars",
+      "vehicles": "cars",
+      "hot wheels": "cars",
+      "football": "football",
+      "soccer": "football",
+      "water gun": "water guns",
+      "water guns": "water guns",
+      "water pistol": "water guns",
+      "water pistols": "water guns",
+      "puzzle": "puzzles",
+      "puzzles": "puzzles",
+      "board game": "board games",
+      "board games": "board games",
+      "makeup": "beauty",
+      "make up": "beauty",
+      "coding": "coding",
+      "programming": "coding",
+      "robot": "robotics",
+      "robots": "robotics",
+      "robotics": "robotics",
+      "chess": "chess",
+      "swimming": "swimming",
+      "basketball": "basketball",
+      "tennis": "tennis",
+      "cycling": "cycling",
+      "bike": "cycling",
+      "bikes": "cycling",
+      "photography": "photography",
+      "camera": "photography",
+      "cameras": "photography",
+      "vacuum": "vacuum",
+      "staubsauger": "staubsauger"
+    };
+
+
+    function handleCountryChange() {
+      const region = document.getElementById("region").value;
+      const storeSelect = document.getElementById("storeFilter");
+      const storeMessage = document.getElementById("storeMessage");
+
+      storeSelect.innerHTML = "";
+
+      if (!region) {
+        storeSelect.disabled = true;
+        storeSelect.innerHTML = `<option value="">First select country</option>`;
+        storeMessage.classList.add("show");
+        return;
+      }
+
+      storeSelect.disabled = false;
+      storeMessage.classList.remove("show");
+
+      const stores = STORE_OPTIONS[region] || STORE_OPTIONS["Other"];
+      stores.forEach(store => {
+        const option = document.createElement("option");
+        option.value = store;
+        option.textContent = store;
+        storeSelect.appendChild(option);
+      });
+    }
+
+    function handleStoreAreaClick() {
+      const region = document.getElementById("region").value;
+      const storeMessage = document.getElementById("storeMessage");
+
+      if (!region) {
+        storeMessage.classList.add("show");
+        setTimeout(() => storeMessage.classList.remove("show"), 2500);
+      }
+    }
+
+    function getSelectedStore() {
+      const storeSelect = document.getElementById("storeFilter");
+      if (!storeSelect || storeSelect.disabled) return "Any trusted store";
+      return storeSelect.value || "Any trusted store";
+    }
+
+    function applyStoreChoice(product, selectedStore) {
+      if (!selectedStore || selectedStore === "Any trusted store") return product;
+
+      const storeRules = STORE_PRODUCT_LINKS[selectedStore];
+      if (!storeRules) {
+        return {
+          ...product,
+          store: selectedStore,
+          url: product.url,
+          storeNote: "Curated direct product page"
+        };
+      }
+
+      const directUrl = storeRules[product.name];
+      const defaultUrl = storeRules["default"];
+
+      if (directUrl) {
+        return {
+          ...product,
+          store: selectedStore,
+          url: directUrl,
+          storeNote: "Direct official product page"
+        };
+      }
+
+      if (defaultUrl) {
+        return {
+          ...product,
+          store: selectedStore,
+          url: defaultUrl + encodeURIComponent(product.name),
+          storeNote: "Trusted store product search"
+        };
+      }
+
+      return product;
+    }
+
+    function readLearnedStats() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveLearnedStats(stats) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+    }
+
+    function normalizeInterest(term) {
+      let cleaned = term
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      if (synonymMap[cleaned]) cleaned = synonymMap[cleaned];
+
+      return cleaned;
+    }
+
+    function isSafeInterest(term) {
+      if (!term || term.length < 3 || term.length > 24) return false;
+
+      const words = term.split(" ");
+      if (words.some(word => commonWords.has(word))) return false;
+
+      if (term !== "water guns" && words.some(word => bannedInterestWords.has(word))) return false;
+
+      return true;
+    }
+
+    function extractInterestCandidates(text) {
+      const cleanText = text
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      const candidates = new Set();
+
+      Object.keys(synonymMap).forEach(alias => {
+        const regex = new RegExp("\\b" + alias.replace(/\s+/g, "\\s+") + "\\b", "i");
+        if (regex.test(cleanText)) candidates.add(synonymMap[alias]);
+      });
+
+      const words = cleanText.split(" ").filter(Boolean);
+
+      for (let i = 0; i < words.length; i++) {
+        const one = normalizeInterest(words[i]);
+        if (isSafeInterest(one)) candidates.add(one);
+
+        if (i < words.length - 1) {
+          const two = normalizeInterest(words[i] + " " + words[i + 1]);
+          if (isSafeInterest(two)) candidates.add(two);
+        }
+      }
+
+      return Array.from(candidates);
+    }
+
+    function learnInterestsFromSearch() {
+      const description = document.getElementById("description").value;
+      const selected = getSelectedInterests();
+      const allText = description + " " + selected.join(" ");
+
+      const candidates = extractInterestCandidates(allText);
+      const stats = readLearnedStats();
+      const now = new Date().toISOString();
+
+      candidates.forEach(term => {
+        const baseExists = BASE_INTERESTS.map(item => item.toLowerCase()).includes(term.toLowerCase());
+
+        if (!baseExists) {
+          if (!stats[term]) stats[term] = { count: 0, lastUsed: now };
+          stats[term].count += 1;
+          stats[term].lastUsed = now;
+        }
+      });
+
+      saveLearnedStats(stats);
+      renderInterestChips();
+      return candidates;
+    }
+
+    function getPromotedInterests() {
+      const stats = readLearnedStats();
+
+      return Object.entries(stats)
+        .filter(([term, data]) => data.count >= LEARN_THRESHOLD && isSafeInterest(term))
+        .sort((a, b) => b[1].count - a[1].count)
+        .slice(0, Math.max(0, MAX_INTERESTS - BASE_INTERESTS.length))
+        .map(([term, data]) => ({ term, count: data.count }));
+    }
+
+    function renderInterestChips() {
+      const box = document.getElementById("interestBox");
+      const previousSelected = new Set(
+        Array.from(document.querySelectorAll(".chip.active")).map(chip => chip.dataset.interest)
+      );
+
+      box.innerHTML = "";
+
+      BASE_INTERESTS.forEach(interest => {
+        const chip = createInterestChip(interest, false, 0);
+        if (previousSelected.has(interest.toLowerCase())) chip.classList.add("active");
+        box.appendChild(chip);
+      });
+
+      getPromotedInterests().forEach(item => {
+        const chip = createInterestChip(item.term, true, item.count);
+        if (previousSelected.has(item.term.toLowerCase())) chip.classList.add("active");
+        box.appendChild(chip);
+      });
+
+      updateLearningInfo();
+    }
+
+    function createInterestChip(interest, learned, count) {
+      const chip = document.createElement("div");
+      chip.className = learned ? "chip learned" : "chip";
+      chip.textContent = interest;
+      chip.dataset.interest = interest.toLowerCase();
+
+      if (learned) {
+        chip.title = `Learned interest · used ${count} times on this browser`;
+      }
+
+      chip.addEventListener("click", () => chip.classList.toggle("active"));
+      return chip;
+    }
+
+    function updateLearningInfo() {
+      const info = document.getElementById("learningInfo");
+      if (!info) return;
+
+      const stats = readLearnedStats();
+      const promoted = getPromotedInterests();
+      const next = Object.entries(stats)
+        .filter(([term, data]) => data.count < LEARN_THRESHOLD && isSafeInterest(term))
+        .sort((a, b) => b[1].count - a[1].count)[0];
+
+      if (promoted.length > 0) {
+        info.textContent = `Smart learning active: ${promoted.length} learned interest(s) added. Maximum interests: ${MAX_INTERESTS}.`;
+      } else if (next) {
+        const remaining = LEARN_THRESHOLD - next[1].count;
+        info.textContent = `Smart learning active: "${next[0]}" needs ${remaining} more search(es) before it appears as a new interest.`;
+      } else {
+        info.textContent = `Smart learning is active. If a new interest is searched ${LEARN_THRESHOLD} times on this browser, it will automatically appear in the interests list. Maximum: ${MAX_INTERESTS} interests.`;
+      }
+    }
+
+    function getSelectedInterests() {
+      return Array.from(document.querySelectorAll(".chip.active"))
+        .map(chip => chip.dataset.interest || chip.textContent.toLowerCase().replace(" learned", ""));
+    }
+
+    function parseBudgetRange(budget) {
+      if (budget.includes("under")) return [0, 20];
+      const numbers = budget.match(/[0-9']+/g).map(value => Number(value.replaceAll("'", "")));
+      if (numbers.length === 1) return [numbers[0], 15000];
+      return [numbers[0], numbers[1]];
+    }
+
+    function parseAgeRange(age) {
+      if (age.includes("any")) return [0, 120];
+      if (age.includes("60+")) return [60, 120];
+      const numbers = age.match(/\d+/g).map(Number);
+      if (numbers.length === 1) return [numbers[0], numbers[0]];
+      return [numbers[0], numbers[1]];
+    }
+
+    function productMatchesAge(product, ageRange) {
+      return product.minAge <= ageRange[1] && product.maxAge >= ageRange[0];
+    }
+
+    function productMatchesBudget(product, budgetRange) {
+      return product.priceChf >= budgetRange[0] && product.priceChf <= budgetRange[1];
+    }
+
+    function calculateProductScore(product, searchText, selectedInterests, detectedInterests, ageRange, budgetRange) {
+      let score = 45;
+      const allInterests = new Set([...selectedInterests, ...detectedInterests].map(item => item.toLowerCase()));
+
+      product.terms.forEach(term => {
+        const termLower = term.toLowerCase();
+        if (searchText.includes(termLower)) score += 9;
+        if (allInterests.has(termLower)) score += 11;
+      });
+
+      if (productMatchesAge(product, ageRange)) score += 8;
+      if (productMatchesBudget(product, budgetRange)) score += 10;
+
+      if (searchText.includes("dad") || searchText.includes("father")) {
+        if (product.terms.includes("hiking") || product.terms.includes("technology") || product.terms.includes("home")) score += 6;
+      }
+
+      if (searchText.includes("mum") || searchText.includes("mom") || searchText.includes("mother")) {
+        if (product.terms.includes("relaxing") || product.terms.includes("beauty") || product.terms.includes("home")) score += 6;
+      }
+
+      if (searchText.includes("sister")) {
+        if (product.terms.includes("lego") || product.terms.includes("art") || product.terms.includes("fashion") || product.terms.includes("animals")) score += 6;
+      }
+
+      if (searchText.includes("friend") || searchText.includes("classmate")) {
+        if (product.terms.includes("gaming") || product.terms.includes("games") || product.terms.includes("school")) score += 6;
+      }
+
+      return Math.max(55, Math.min(score, 99));
+    }
+
+    function selectProducts(searchText, selectedInterests, detectedInterests, age, budget) {
+      const budgetRange = parseBudgetRange(budget);
+      const ageRange = parseAgeRange(age);
+
+      let products = PRODUCT_CATALOG
+        .map(product => {
+          const score = calculateProductScore(product, searchText, selectedInterests, detectedInterests, ageRange, budgetRange);
+          return { ...product, score };
+        })
+        .filter(product => productMatchesAge(product, ageRange))
+        .filter(product => product.score >= 66 || selectedInterests.length === 0)
+        .sort((a, b) => b.score - a.score || a.priceChf - b.priceChf);
+
+      const budgetProducts = products.filter(product => productMatchesBudget(product, budgetRange));
+      if (budgetProducts.length >= 4) products = budgetProducts;
+
+      if (products.length < 5) {
+        const fillers = PRODUCT_CATALOG
+          .map(product => {
+            const score = calculateProductScore(product, searchText, selectedInterests, detectedInterests, ageRange, budgetRange);
+            return { ...product, score: Math.max(60, score - 8) };
+          })
+          .filter(product => productMatchesAge(product, ageRange))
+          .filter(product => productMatchesBudget(product, budgetRange))
+          .sort((a, b) => b.score - a.score || a.priceChf - b.priceChf);
+
+        products = [...products, ...fillers];
+      }
+
+      if (products.length < 5) {
+        const relaxed = PRODUCT_CATALOG
+          .map(product => {
+            const score = calculateProductScore(product, searchText, selectedInterests, detectedInterests, ageRange, budgetRange);
+            return { ...product, score: Math.max(58, score - 12) };
+          })
+          .filter(product => productMatchesAge(product, ageRange))
+          .sort((a, b) => b.score - a.score || a.priceChf - b.priceChf);
+
+        products = [...products, ...relaxed];
+      }
+
+      const unique = [];
+      const seen = new Set();
+
+      products.forEach(product => {
+        if (!seen.has(product.url)) {
+          seen.add(product.url);
+          unique.push(product);
+        }
+      });
+
+      return unique.slice(0, 8);
+    }
+
+    function startGiftSearch() {
+      const loadingPanel = document.getElementById("loadingPanel");
+      const resultArea = document.getElementById("resultArea");
+      const loadingBar = document.getElementById("loadingBar");
+      const loadingPercent = document.getElementById("loadingPercent");
+      const loadingTitle = document.getElementById("loadingTitle");
+      const loadingSteps = document.getElementById("loadingSteps");
+
+      resultArea.style.display = "none";
+      loadingPanel.style.display = "block";
+      loadingBar.style.width = "0%";
+      loadingPercent.textContent = "0%";
+
+      const steps = [
+        "Understanding the person...",
+        "Detecting interests and keywords...",
+        "Choosing exact product ideas...",
+        "Checking budget and age group...",
+        "Preparing direct product links...",
+        "Building shopping results..."
+      ];
+
+      let progress = 0;
+      let stepIndex = 0;
+
+      const timer = setInterval(() => {
+        progress += Math.floor(Math.random() * 11) + 6;
+        if (progress > 100) progress = 100;
+
+        loadingBar.style.width = progress + "%";
+        loadingPercent.textContent = progress + "%";
+
+        if (progress > stepIndex * 18 && stepIndex < steps.length) {
+          loadingTitle.textContent = steps[stepIndex];
+          loadingSteps.textContent = steps[stepIndex];
+          stepIndex++;
+        }
+
+        if (progress >= 100) {
+          clearInterval(timer);
+          setTimeout(() => {
+            loadingPanel.style.display = "none";
+            generateGifts();
+          }, 350);
+        }
+      }, 180);
+    }
+
+    function generateGifts() {
+      const description = document.getElementById("description").value.toLowerCase();
+      const receiver = document.getElementById("receiver").value.toLowerCase();
+      const age = document.getElementById("age").value;
+      const gender = document.getElementById("gender").value;
+      const budget = document.getElementById("budget").value;
+      const region = document.getElementById("region").value;
+      const selectedStore = getSelectedStore();
+
+      const learnedOrDetected = learnInterestsFromSearch();
+      const selectedInterests = getSelectedInterests();
+      const detectedInterests = Array.from(new Set([...learnedOrDetected, ...selectedInterests]));
+
+      const searchText = [
+        description,
+        receiver,
+        age,
+        gender,
+        budget,
+        region,
+        ...selectedInterests,
+        ...detectedInterests
+      ].join(" ").toLowerCase();
+
+      let products = selectProducts(searchText, selectedInterests, detectedInterests, age, budget);
+      products = products.map(product => applyStoreChoice(product, selectedStore));
+
+      renderIdeaList(products);
+      renderShoppingCards(products);
+
+      document.getElementById("resultArea").style.display = "block";
+      document.getElementById("resultArea").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderIdeaList(products) {
+      const ideaList = document.getElementById("ideaList");
+      ideaList.innerHTML = "";
+
+      products.slice(0, 5).forEach(product => {
+        const row = document.createElement("div");
+        row.className = "idea-row";
+
+        row.innerHTML = `
+          <div>
+            <strong>${product.name}</strong>
+            <p>${product.reason} Exact example price: CHF ${product.priceChf.toFixed(2)} at ${product.store}.</p>
+          </div>
+          <div class="match-pill">${product.score}% match</div>
+        `;
+
+        ideaList.appendChild(row);
+      });
+    }
+
+    function renderShoppingCards(products) {
+      const shoppingGrid = document.getElementById("shoppingGrid");
+      shoppingGrid.innerHTML = "";
+
+      products.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "shopping-card";
+
+        const rating = product.score >= 90 ? "★★★★★" : product.score >= 82 ? "★★★★☆" : "★★★☆☆";
+
+        card.innerHTML = `
+          <div class="product-image" style="background-image: url('${product.image}')">
+            <div class="safe-badge">${product.score}% match</div>
+          </div>
+          <div class="shopping-body">
+            <h4>${product.name}</h4>
+            <div class="price">CHF ${product.priceChf.toFixed(2)}</div>
+            <div class="shop">${product.store} · ${product.storeNote || "direct product page"}</div>
+            <div class="rating">${rating}</div>
+            <a class="open-link" href="${product.url}" target="_blank" rel="noopener noreferrer">
+              Open product page
+            </a>
+          </div>
+        `;
+
+        shoppingGrid.appendChild(card);
+      });
+    }
+
+    function useExample(text) {
+      document.getElementById("description").value = text;
+
+      document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("active"));
+
+      const lower = text.toLowerCase();
+
+      document.querySelectorAll(".chip").forEach(chip => {
+        const interest = chip.dataset.interest || chip.textContent.toLowerCase();
+
+        if (lower.includes(interest)) chip.classList.add("active");
+        if (lower.includes("drawing") && interest === "art") chip.classList.add("active");
+        if (lower.includes("football") && interest === "sports") chip.classList.add("active");
+        if (lower.includes("hiking") && interest === "outdoor") chip.classList.add("active");
+        if (lower.includes("cooking") && interest === "food") chip.classList.add("active");
+        if (lower.includes("coffee") && interest === "coffee") chip.classList.add("active");
+        if (lower.includes("relaxing") && interest === "relaxing") chip.classList.add("active");
+      });
+
+      if (lower.includes("dad")) {
+        document.getElementById("receiver").value = "father";
+        document.getElementById("age").value = "40–60 years";
+        document.getElementById("gender").value = "man";
+      }
+
+      if (lower.includes("mum")) {
+        document.getElementById("receiver").value = "mother";
+        document.getElementById("age").value = "40–60 years";
+        document.getElementById("gender").value = "woman";
+      }
+
+      if (lower.includes("sister")) {
+        document.getElementById("receiver").value = "sister";
+        document.getElementById("age").value = "10–13 years";
+        document.getElementById("gender").value = "girl";
+      }
+
+      if (lower.includes("friend")) {
+        document.getElementById("receiver").value = "friend";
+        document.getElementById("age").value = "13–16 years";
+        document.getElementById("gender").value = "any";
+      }
+
+      document.getElementById("tool").scrollIntoView({ behavior: "smooth" });
+
+      setTimeout(() => startGiftSearch(), 450);
+    }
+
+    renderInterestChips();
+    handleCountryChange();
+  </script>
+
+
+  <script>
+    const GEMINI_BACKEND_URL = "https://giftmatch-ai-gemini-backend.vercel.app/api/gift";
+
+    function giftmatchGetSelectedInterests() {
+      return Array.from(document.querySelectorAll(".chip.active"))
+        .map(chip => (chip.dataset.interest || chip.textContent || "").toLowerCase().replace(" learned", "").trim())
+        .filter(Boolean);
+    }
+
+    function giftmatchGoogleUrl(query, type) {
+      const base = "https://www.google.com/search?safe=active&ssui=on";
+      if (type === "shopping") return base + "&tbm=shop&q=" + encodeURIComponent(query);
+      if (type === "images") return base + "&tbm=isch&q=" + encodeURIComponent(query);
+      return base + "&q=" + encodeURIComponent(query);
+    }
+
+    function giftmatchImageQuery(idea) {
+      const text = (idea.name || idea.googleSearchQuery || "gift product").replace(/[^a-zA-Z0-9\s]/g, " ");
+      return "https://source.unsplash.com/600x400/?" + encodeURIComponent(text);
+    }
+
+    function showAiLoading() {
+      const loadingPanel = document.getElementById("loadingPanel");
+      const resultArea = document.getElementById("resultArea");
+      const loadingBar = document.getElementById("loadingBar");
+      const loadingPercent = document.getElementById("loadingPercent");
+      const loadingTitle = document.getElementById("loadingTitle");
+      const loadingSteps = document.getElementById("loadingSteps");
+
+      resultArea.style.display = "none";
+      loadingPanel.style.display = "block";
+      loadingBar.style.width = "0%";
+      loadingPercent.textContent = "0%";
+
+      const steps = [
+        "Reading your filters...",
+        "Sending request to Gemini...",
+        "Gemini is creating specific gift ideas...",
+        "Preparing Google Shopping links...",
+        "Building AI result cards..."
+      ];
+
+      let progress = 0;
+      let stepIndex = 0;
+
+      const timer = setInterval(() => {
+        progress += Math.floor(Math.random() * 10) + 5;
+        if (progress > 92) progress = 92;
+
+        loadingBar.style.width = progress + "%";
+        loadingPercent.textContent = progress + "%";
+
+        if (progress > stepIndex * 20 && stepIndex < steps.length) {
+          loadingTitle.textContent = steps[stepIndex];
+          loadingSteps.textContent = steps[stepIndex];
+          stepIndex++;
+        }
+      }, 180);
+
+      return function finishLoading() {
+        clearInterval(timer);
+        loadingBar.style.width = "100%";
+        loadingPercent.textContent = "100%";
+        setTimeout(() => {
+          loadingPanel.style.display = "none";
+        }, 250);
+      };
+    }
+
+    async function startGiftSearch() {
+      const finishLoading = showAiLoading();
+
+      try {
+        await generateGifts();
+      } finally {
+        finishLoading();
+      }
+    }
+
+    async function generateGifts() {
+      const description = document.getElementById("description").value;
+      const receiver = document.getElementById("receiver").value;
+      const age = document.getElementById("age").value;
+      const gender = document.getElementById("gender").value;
+      const budget = document.getElementById("budget").value;
+      const country = document.getElementById("region").value || "Switzerland";
+      const storeSelect = document.getElementById("storeFilter");
+      const store = storeSelect && !storeSelect.disabled ? storeSelect.value : "Any secure website";
+      const interests = giftmatchGetSelectedInterests();
+
+      const resultArea = document.getElementById("resultArea");
+
+      const payload = {
+        description,
+        receiver,
+        age,
+        gender,
+        budget,
+        country,
+        store,
+        interests
+      };
+
+      try {
+        const response = await fetch(GEMINI_BACKEND_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.error || "AI backend error");
+        }
+
+        const ideas = Array.isArray(data.ideas) ? data.ideas : [];
+        renderAiResults(ideas, payload);
+      } catch (error) {
+        resultArea.innerHTML = `
+          <div class="match-summary">
+            <div class="ai-error-box">
+              Gemini connection failed: ${error.message}. Check Vercel environment variable, CORS backend file, and redeploy.
+            </div>
+            <h3>Fallback Google Search</h3>
+            <p>Use this fresh Google search while the AI connection is being fixed.</p>
+            <div class="google-actions">
+              <a class="google-button" href="${giftmatchGoogleUrl(description + " gift ideas " + interests.join(" ") + " " + budget + " " + country, "normal")}" target="_blank" rel="noopener noreferrer">
+                Open Google Search
+              </a>
+              <a class="google-button secondary-google" href="${giftmatchGoogleUrl(description + " gift ideas " + interests.join(" ") + " " + budget + " " + country, "shopping")}" target="_blank" rel="noopener noreferrer">
+                Open Google Shopping
+              </a>
+            </div>
+          </div>
+        `;
+        resultArea.style.display = "block";
+        resultArea.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function renderAiResults(ideas, payload) {
+      const resultArea = document.getElementById("resultArea");
+
+      if (!ideas.length) {
+        resultArea.innerHTML = `
+          <div class="match-summary">
+            <div class="ai-error-box">
+              Gemini did not return gift ideas. Try writing more details.
+            </div>
+          </div>
+        `;
+        resultArea.style.display = "block";
+        return;
+      }
+
+      resultArea.innerHTML = `
+        <div class="match-summary">
+          <div class="ai-badge">Gemini AI connected</div>
+          <h3>Best AI gift ideas</h3>
+          <div class="idea-list" id="ideaList"></div>
+        </div>
+
+        <div class="shopping-title">
+          <div>
+            <h3>AI shopping results</h3>
+            <p>These results are generated by Gemini. Buttons open fresh Google Search / Shopping with SafeSearch active.</p>
+          </div>
+        </div>
+
+        <div class="shopping-grid" id="shoppingGrid"></div>
+      `;
+
+      const ideaList = document.getElementById("ideaList");
+      const shoppingGrid = document.getElementById("shoppingGrid");
+
+      ideas.slice(0, 5).forEach(idea => {
+        const match = Number(idea.match) || 85;
+        const row = document.createElement("div");
+        row.className = "idea-row";
+        row.innerHTML = `
+          <div>
+            <strong>${idea.name || "Gift idea"}</strong>
+            <p>${idea.why || "This gift matches the selected interests."} Exact estimate: ${idea.price || "Check live price"}.</p>
+          </div>
+          <div class="match-pill">${match}% match</div>
+        `;
+        ideaList.appendChild(row);
+      });
+
+      ideas.slice(0, 8).forEach(idea => {
+        const searchQuery = idea.googleSearchQuery || `${idea.name} gift ${payload.country} ${payload.budget}`;
+        const shoppingQuery = idea.googleShoppingQuery || searchQuery;
+        const imageQuery = idea.name || searchQuery;
+        const stores = Array.isArray(idea.stores) ? idea.stores.join(", ") : payload.store;
+        const match = Number(idea.match) || 85;
+
+        const card = document.createElement("div");
+        card.className = "ai-card";
+
+        card.innerHTML = `
+          <div class="ai-card-image" style="background-image: url('${giftmatchImageQuery(idea)}')">
+            <div class="ai-match">${match}% match</div>
+          </div>
+          <div class="ai-card-body">
+            <h4>${idea.name || "Gift idea"}</h4>
+            <p>${idea.why || "A smart AI-generated gift suggestion."}</p>
+            <div class="ai-price">${idea.price || "Check live price"}</div>
+            <div class="ai-stores">Suggested stores: ${stores}</div>
+            <div class="ai-buttons">
+              <a class="ai-link" href="${giftmatchGoogleUrl(shoppingQuery, "shopping")}" target="_blank" rel="noopener noreferrer">Open Google Shopping</a>
+              <a class="ai-link" href="${giftmatchGoogleUrl(searchQuery, "normal")}" target="_blank" rel="noopener noreferrer">Open Google Search</a>
+              <a class="ai-link" href="${giftmatchGoogleUrl(imageQuery, "images")}" target="_blank" rel="noopener noreferrer">See product photos</a>
+            </div>
+          </div>
+        `;
+        shoppingGrid.appendChild(card);
+      });
+
+      resultArea.style.display = "block";
+      resultArea.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  </script>
+
+</body>
+</html>
