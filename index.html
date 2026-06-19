@@ -3109,6 +3109,23 @@
 
   <script>
     const DEFAULT_GEMINI_BACKEND_PATH = "/api/gift";
+    const DEFAULT_GEMINI_MODEL = "gemini-2.0-flash";
+
+    function giftmatchGetGeminiApiKey() {
+      return (
+        window.GIFTMATCH_GEMINI_API_KEY ||
+        document.querySelector('meta[name="giftmatch-gemini-api-key"]')?.content ||
+        ""
+      ).trim();
+    }
+
+    function giftmatchGetGeminiModel() {
+      return (
+        window.GIFTMATCH_GEMINI_MODEL ||
+        document.querySelector('meta[name="giftmatch-gemini-model"]')?.content ||
+        DEFAULT_GEMINI_MODEL
+      ).trim();
+    }
 
     function giftmatchGetBackendUrl() {
       const configuredUrl = (
@@ -3118,6 +3135,10 @@
       ).trim();
 
       return configuredUrl || DEFAULT_GEMINI_BACKEND_PATH;
+    }
+
+    function giftmatchShouldUseDirectGemini() {
+      return Boolean(giftmatchGetGeminiApiKey());
     }
 
     function giftmatchIsGitHubPagesApiUrl(url) {
@@ -3131,10 +3152,58 @@
 
     function giftmatchBackendSetupMessage(url) {
       if (giftmatchIsGitHubPagesApiUrl(url)) {
-        return "This page is hosted on GitHub Pages, but GitHub Pages cannot run /api/gift serverless functions or accept POST requests there. Deploy this repository on Vercel and use the Vercel URL, or set window.GIFTMATCH_BACKEND_URL / the giftmatch-backend-url meta tag to your Vercel /api/gift endpoint.";
+        return "This page is hosted on GitHub Pages, which cannot run /api/gift. Add window.GIFTMATCH_GEMINI_API_KEY or a giftmatch-gemini-api-key meta tag before this script so the static page can call Gemini directly.";
       }
 
-      return "Open /api/gift on the same domain; it should show JSON. If it shows HTML, redeploy the repository root on Vercel so api/gift.js is included.";
+      return "Add window.GIFTMATCH_GEMINI_API_KEY or a giftmatch-gemini-api-key meta tag for static hosting, or deploy api/gift.js on a backend host.";
+    }
+
+    function giftmatchCleanGeminiJson(text = "") {
+      return text
+        .trim()
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/```$/i, "")
+        .trim();
+    }
+
+    function giftmatchBuildPrompt(input) {
+      return `You are Giftmatch.ai, a smart and safe gift recommendation assistant.
+
+Create 5 very specific gift ideas.
+
+User request JSON:
+${JSON.stringify(input, null, 2)}
+
+Rules:
+- Give specific real gift objects, not vague categories.
+- Match the selected interests strongly.
+- If the user likes hiking, suggest compact useful hiking gadgets or tools.
+- If the user likes animals, suggest animal-related gifts.
+- If the user likes gaming, suggest real gaming accessories or products.
+- If the user likes Lego, suggest specific Lego-style products or set types.
+- If the user selected a preferred store, respect it when possible.
+- If the store is “Any secure website”, suggest several trusted stores for the selected country.
+- Avoid unsafe, suspicious, illegal, adult, gambling, alcohol, nicotine, weapon, or fake-shop suggestions.
+- Do not recommend Temu, AliExpress, fake shops, illegal sites, or unsafe links.
+- Use realistic estimated prices in CHF.
+- Include Google Search and Google Shopping queries so the frontend can open fresh product results.
+- Return only valid JSON. No markdown.
+
+Required JSON format:
+{
+  "ideas": [
+    {
+      "name": "specific gift object name",
+      "why": "short reason why it matches",
+      "price": "estimated CHF price",
+      "match": 95,
+      "googleSearchQuery": "specific Google search query",
+      "googleShoppingQuery": "specific Google Shopping query",
+      "stores": ["store 1", "store 2", "store 3"]
+    }
+  ]
+}`;
     }
 
     function giftmatchGetSelectedInterests() {
@@ -3304,21 +3373,9 @@
       };
 
       try {
-        const backendUrl = giftmatchGetBackendUrl();
-        const response = await fetch(backendUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await giftmatchReadJsonResponse(response, backendUrl);
-
-        if (!response.ok) {
-          throw new Error(data?.error || data?.details || "AI backend error");
-        }
+        const data = giftmatchShouldUseDirectGemini()
+          ? await giftmatchGenerateGiftsWithGemini(payload)
+          : await giftmatchGenerateGiftsWithBackend(payload);
 
         const ideas = Array.isArray(data.ideas) ? data.ideas : [];
         renderAiResults(ideas, payload);
@@ -3331,6 +3388,67 @@
       }
     }
 
+    async function giftmatchGenerateGiftsWithBackend(payload) {
+      const backendUrl = giftmatchGetBackendUrl();
+      const response = await fetch(backendUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await giftmatchReadJsonResponse(response, backendUrl);
+
+      if (!response.ok) {
+        throw new Error(data?.error || data?.details || "AI backend error");
+      }
+
+      return data;
+    }
+
+    async function giftmatchGenerateGiftsWithGemini(payload) {
+      const apiKey = giftmatchGetGeminiApiKey();
+      const model = giftmatchGetGeminiModel();
+
+      if (!apiKey) {
+        throw new Error("Missing Gemini API key. Set window.GIFTMATCH_GEMINI_API_KEY or add a giftmatch-gemini-api-key meta tag.");
+      }
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: giftmatchBuildPrompt(payload) }] }],
+          generationConfig: {
+            temperature: 0.65,
+            topP: 0.9,
+            maxOutputTokens: 1800,
+            responseMimeType: "application/json"
+          }
+        })
+      });
+
+      const geminiData = await giftmatchReadJsonResponse(response, "Gemini API");
+
+      if (!response.ok) {
+        throw new Error(geminiData?.error?.message || "Gemini API request failed.");
+      }
+
+      const text = geminiData?.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("") || "";
+
+      try {
+        const parsed = JSON.parse(giftmatchCleanGeminiJson(text));
+        return { ideas: Array.isArray(parsed.ideas) ? parsed.ideas.slice(0, 5) : [], model };
+      } catch (error) {
+        throw new Error("Gemini returned a response that was not valid gift JSON.");
+      }
+    }
+
     function renderAiResults(ideas, payload, options = {}) {
       const resultArea = document.getElementById("resultArea");
 
@@ -3338,7 +3456,7 @@
         resultArea.innerHTML = `
           <div class="match-summary">
             <div class="ai-error-box">
-              The AI backend did not return gift ideas. Try writing more details.
+              The The AI service did not return gift ideas. Try writing more details.
             </div>
           </div>
         `;
@@ -3348,8 +3466,8 @@
 
       resultArea.innerHTML = `
         <div class="match-summary">
-          <div class="ai-badge">${options.fallback ? "Offline fallback active" : "AI backend connected"}</div>
-          ${options.fallback ? `<div class="ai-error-box">AI connection failed: ${giftmatchEscapeHtml(options.message)} The app is showing built-in gift ideas and live Google links while <code>/api/gift</code> is fixed.</div>` : ""}
+          <div class="ai-badge">${options.fallback ? "Offline fallback active" : (giftmatchShouldUseDirectGemini() ? "Gemini connected" : "AI backend connected")}</div>
+          ${options.fallback ? `<div class="ai-error-box">AI connection failed: ${giftmatchEscapeHtml(options.message)} The app is showing built-in gift ideas and live Google links while the AI connection is fixed.</div>` : ""}
           <h3>${options.fallback ? "Best fallback gift ideas" : "Best AI gift ideas"}</h3>
           <div class="idea-list" id="ideaList"></div>
         </div>
@@ -3357,7 +3475,7 @@
         <div class="shopping-title">
           <div>
             <h3>${options.fallback ? "Fallback shopping links" : "AI shopping results"}</h3>
-            <p>${options.fallback ? "These built-in ideas keep the tool usable when the backend is unavailable." : "These are AI-generated ideas."} Open Google Shopping for current prices, and always check safety, price, and availability yourself.</p>
+            <p>${options.fallback ? "These built-in ideas keep the tool usable when the AI connection is unavailable." : "These are AI-generated ideas."} Open Google Shopping for current prices, and always check safety, price, and availability yourself.</p>
           </div>
         </div>
 
