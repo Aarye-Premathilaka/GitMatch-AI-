@@ -3108,7 +3108,34 @@
 
 
   <script>
-    const GEMINI_BACKEND_URL = "/api/gift";
+    const DEFAULT_GEMINI_BACKEND_PATH = "/api/gift";
+
+    function giftmatchGetBackendUrl() {
+      const configuredUrl = (
+        window.GIFTMATCH_BACKEND_URL ||
+        document.querySelector('meta[name="giftmatch-backend-url"]')?.content ||
+        ""
+      ).trim();
+
+      return configuredUrl || DEFAULT_GEMINI_BACKEND_PATH;
+    }
+
+    function giftmatchIsGitHubPagesApiUrl(url) {
+      try {
+        const resolvedUrl = new URL(url, window.location.href);
+        return resolvedUrl.hostname.endsWith(".github.io") && resolvedUrl.pathname.startsWith("/api/");
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function giftmatchBackendSetupMessage(url) {
+      if (giftmatchIsGitHubPagesApiUrl(url)) {
+        return "This page is hosted on GitHub Pages, but GitHub Pages cannot run /api/gift serverless functions or accept POST requests there. Deploy this repository on Vercel and use the Vercel URL, or set window.GIFTMATCH_BACKEND_URL / the giftmatch-backend-url meta tag to your Vercel /api/gift endpoint.";
+      }
+
+      return "Open /api/gift on the same domain; it should show JSON. If it shows HTML, redeploy the repository root on Vercel so api/gift.js is included.";
+    }
 
     function giftmatchGetSelectedInterests() {
       return Array.from(document.querySelectorAll(".chip.active"))
@@ -3229,7 +3256,7 @@
       }
     }
 
-    async function giftmatchReadJsonResponse(response) {
+    async function giftmatchReadJsonResponse(response, backendUrl) {
       const contentType = response.headers.get("content-type") || "";
       const responseText = await response.text();
 
@@ -3242,10 +3269,14 @@
       }
 
       if (responseText.trim().startsWith("<")) {
-        throw new Error("AI backend returned an HTML page instead of JSON. Open /api/gift on the same domain; it should show JSON. If it shows HTML, redeploy the repository root on Vercel so api/gift.js is included.");
+        throw new Error(`AI backend returned an HTML page instead of JSON. ${giftmatchBackendSetupMessage(backendUrl)}`);
       }
 
-      throw new Error(responseText.trim() || "AI backend returned an unexpected response.");
+      if (response.status === 405 && giftmatchIsGitHubPagesApiUrl(backendUrl)) {
+        throw new Error(`AI backend returned 405 Method Not Allowed. ${giftmatchBackendSetupMessage(backendUrl)}`);
+      }
+
+      throw new Error(responseText.trim() || `AI backend returned an unexpected response. ${giftmatchBackendSetupMessage(backendUrl)}`);
     }
 
     async function generateGifts() {
@@ -3273,7 +3304,8 @@
       };
 
       try {
-        const response = await fetch(GEMINI_BACKEND_URL, {
+        const backendUrl = giftmatchGetBackendUrl();
+        const response = await fetch(backendUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -3282,7 +3314,7 @@
           body: JSON.stringify(payload)
         });
 
-        const data = await giftmatchReadJsonResponse(response);
+        const data = await giftmatchReadJsonResponse(response, backendUrl);
 
         if (!response.ok) {
           throw new Error(data?.error || data?.details || "AI backend error");
