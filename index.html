@@ -3108,54 +3108,24 @@
 
 
   <script>
-    const DEFAULT_GEMINI_BACKEND_PATH = "/api/gift";
-    const DEFAULT_GEMINI_MODEL = "gemini-2.0-flash";
+    // GitHub Pages is static hosting only: it cannot run backend /api routes such as /api/gift.
+    // This demo can call Gemini directly from the browser when a key is configured.
+    // Security note: frontend API keys are visible to users, so this is acceptable only for demo/testing.
+    // For production, move the Gemini call to Cloudflare Worker, Netlify Function, Vercel Serverless Function, or Firebase Function.
+    function getGiftMatchGeminiApiKey() {
+      const windowKey = (window.GIFTMATCH_GEMINI_API_KEY || "").trim();
+      if (windowKey) return windowKey;
+
+      const metaKey = (document.querySelector('meta[name="giftmatch-gemini-api-key"]')?.content || "").trim();
+      return metaKey || null;
+    }
 
     function giftmatchGetGeminiApiKey() {
-      return (
-        window.GIFTMATCH_GEMINI_API_KEY ||
-        document.querySelector('meta[name="giftmatch-gemini-api-key"]')?.content ||
-        ""
-      ).trim();
-    }
-
-    function giftmatchGetGeminiModel() {
-      return (
-        window.GIFTMATCH_GEMINI_MODEL ||
-        document.querySelector('meta[name="giftmatch-gemini-model"]')?.content ||
-        DEFAULT_GEMINI_MODEL
-      ).trim();
-    }
-
-    function giftmatchGetBackendUrl() {
-      const configuredUrl = (
-        window.GIFTMATCH_BACKEND_URL ||
-        document.querySelector('meta[name="giftmatch-backend-url"]')?.content ||
-        ""
-      ).trim();
-
-      return configuredUrl || DEFAULT_GEMINI_BACKEND_PATH;
+      return getGiftMatchGeminiApiKey();
     }
 
     function giftmatchShouldUseDirectGemini() {
-      return Boolean(giftmatchGetGeminiApiKey());
-    }
-
-    function giftmatchIsGitHubPagesApiUrl(url) {
-      try {
-        const resolvedUrl = new URL(url, window.location.href);
-        return resolvedUrl.hostname.endsWith(".github.io") && resolvedUrl.pathname.startsWith("/api/");
-      } catch (error) {
-        return false;
-      }
-    }
-
-    function giftmatchBackendSetupMessage(url) {
-      if (giftmatchIsGitHubPagesApiUrl(url)) {
-        return "This page is hosted on GitHub Pages, which cannot run /api/gift. Add window.GIFTMATCH_GEMINI_API_KEY or a giftmatch-gemini-api-key meta tag before this script so the static page can call Gemini directly.";
-      }
-
-      return "Add window.GIFTMATCH_GEMINI_API_KEY or a giftmatch-gemini-api-key meta tag for static hosting, or deploy api/gift.js on a backend host.";
+      return Boolean(getGiftMatchGeminiApiKey());
     }
 
     function giftmatchCleanGeminiJson(text = "") {
@@ -3168,39 +3138,30 @@
     }
 
     function giftmatchBuildPrompt(input) {
-      return `You are Giftmatch.ai, a smart and safe gift recommendation assistant.
+      return `You are GiftMatch AI.
+Recommend creative, safe, age-appropriate gift ideas using the user description and selected filters.
+Return around 6 gift ideas.
+Return only valid JSON. No markdown. No explanation outside JSON.
 
-Create 5 very specific gift ideas.
-
-User request JSON:
+User description and filters:
 ${JSON.stringify(input, null, 2)}
 
-Rules:
-- Give specific real gift objects, not vague categories.
-- Match the selected interests strongly.
-- If the user likes hiking, suggest compact useful hiking gadgets or tools.
-- If the user likes animals, suggest animal-related gifts.
-- If the user likes gaming, suggest real gaming accessories or products.
-- If the user likes Lego, suggest specific Lego-style products or set types.
-- If the user selected a preferred store, respect it when possible.
-- If the store is “Any secure website”, suggest several trusted stores for the selected country.
-- Avoid unsafe, suspicious, illegal, adult, gambling, alcohol, nicotine, weapon, or fake-shop suggestions.
-- Do not recommend Temu, AliExpress, fake shops, illegal sites, or unsafe links.
-- Use realistic estimated prices in CHF.
-- Include Google Search and Google Shopping queries so the frontend can open fresh product results.
-- Return only valid JSON. No markdown.
+Safety and quality rules:
+- Recommend real, useful gift objects rather than vague categories.
+- Keep ideas age-appropriate and avoid unsafe, adult, illegal, gambling, alcohol, nicotine, weapon, or suspicious-shop suggestions.
+- Respect the budget, country, recipient, age, gender, selected store, and interests when possible.
+- Make searchQuery a safe Google shopping/search phrase for finding the gift.
+- Use one of these priceRange values: "Budget", "Medium", or "Premium".
 
 Required JSON format:
 {
-  "ideas": [
+  "gifts": [
     {
-      "name": "specific gift object name",
-      "why": "short reason why it matches",
-      "price": "estimated CHF price",
-      "match": 95,
-      "googleSearchQuery": "specific Google search query",
-      "googleShoppingQuery": "specific Google Shopping query",
-      "stores": ["store 1", "store 2", "store 3"]
+      "title": "Gift name",
+      "reason": "Why this gift matches the person",
+      "category": "Category name",
+      "priceRange": "Budget / Medium / Premium",
+      "searchQuery": "Google shopping search query"
     }
   ]
 }`;
@@ -3253,7 +3214,7 @@ Required JSON format:
       ];
 
       const matched = catalog.filter(item => item.keys.some(key => text.includes(key)));
-      const selected = (matched.length ? matched : catalog).slice(0, 5);
+      const selected = (matched.length ? matched : catalog).slice(0, 6);
 
       return selected.map((item, index) => ({
         name: item.name,
@@ -3325,29 +3286,6 @@ Required JSON format:
       }
     }
 
-    async function giftmatchReadJsonResponse(response, backendUrl) {
-      const contentType = response.headers.get("content-type") || "";
-      const responseText = await response.text();
-
-      if (contentType.includes("application/json")) {
-        try {
-          return responseText ? JSON.parse(responseText) : {};
-        } catch (error) {
-          throw new Error("AI backend returned invalid JSON. Please redeploy the /api/gift endpoint.");
-        }
-      }
-
-      if (responseText.trim().startsWith("<")) {
-        throw new Error(`AI backend returned an HTML page instead of JSON. ${giftmatchBackendSetupMessage(backendUrl)}`);
-      }
-
-      if (response.status === 405 && giftmatchIsGitHubPagesApiUrl(backendUrl)) {
-        throw new Error(`AI backend returned 405 Method Not Allowed. ${giftmatchBackendSetupMessage(backendUrl)}`);
-      }
-
-      throw new Error(responseText.trim() || `AI backend returned an unexpected response. ${giftmatchBackendSetupMessage(backendUrl)}`);
-    }
-
     async function generateGifts() {
       const description = document.getElementById("description").value;
       const receiver = document.getElementById("receiver").value;
@@ -3373,79 +3311,102 @@ Required JSON format:
       };
 
       try {
-        const data = giftmatchShouldUseDirectGemini()
-          ? await giftmatchGenerateGiftsWithGemini(payload)
-          : await giftmatchGenerateGiftsWithBackend(payload);
-
+        const data = await giftmatchGenerateGiftsWithGemini(payload);
         const ideas = Array.isArray(data.ideas) ? data.ideas : [];
-        renderAiResults(ideas, payload);
+
+        if (!ideas.length) {
+          throw new Error("AI is temporarily unavailable, so we are showing smart built-in gift ideas.");
+        }
+
+        renderAiResults(ideas, payload, data.fallback ? {
+          fallback: true,
+          message: "AI is temporarily unavailable, so we are showing smart built-in gift ideas."
+        } : {});
       } catch (error) {
         const fallbackIdeas = giftmatchBuildLocalIdeas(payload, error.message);
         renderAiResults(fallbackIdeas, payload, {
           fallback: true,
-          message: error.message
+          message: "AI is temporarily unavailable, so we are showing smart built-in gift ideas."
         });
       }
     }
 
-    async function giftmatchGenerateGiftsWithBackend(payload) {
-      const backendUrl = giftmatchGetBackendUrl();
-      const response = await fetch(backendUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await giftmatchReadJsonResponse(response, backendUrl);
-
-      if (!response.ok) {
-        throw new Error(data?.error || data?.details || "AI backend error");
-      }
-
-      return data;
-    }
-
-    async function giftmatchGenerateGiftsWithGemini(payload) {
-      const apiKey = giftmatchGetGeminiApiKey();
-      const model = giftmatchGetGeminiModel();
+    async function giftmatchGenerateGiftsWithGemini(userInput, filters = {}) {
+      const payload = { ...userInput, ...filters };
+      const apiKey = getGiftMatchGeminiApiKey();
 
       if (!apiKey) {
-        throw new Error("Missing Gemini API key. Set window.GIFTMATCH_GEMINI_API_KEY or add a giftmatch-gemini-api-key meta tag.");
+        return {
+          ideas: giftmatchBuildLocalIdeas(payload, "Missing Gemini API key"),
+          fallback: true
+        };
       }
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: giftmatchBuildPrompt(payload) }] }],
-          generationConfig: {
-            temperature: 0.65,
-            topP: 0.9,
-            maxOutputTokens: 1800,
-            responseMimeType: "application/json"
-          }
-        })
-      });
-
-      const geminiData = await giftmatchReadJsonResponse(response, "Gemini API");
-
-      if (!response.ok) {
-        throw new Error(geminiData?.error?.message || "Gemini API request failed.");
-      }
-
-      const text = geminiData?.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("") || "";
 
       try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: giftmatchBuildPrompt(payload)
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 1200,
+              responseMimeType: "application/json"
+            }
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("Gemini request failed");
+        }
+
+        const geminiData = await response.json();
+        const text = geminiData?.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("") || "";
         const parsed = JSON.parse(giftmatchCleanGeminiJson(text));
-        return { ideas: Array.isArray(parsed.ideas) ? parsed.ideas.slice(0, 5) : [], model };
+        const gifts = Array.isArray(parsed.gifts) ? parsed.gifts : [];
+
+        if (!gifts.length) {
+          throw new Error("Gemini returned no gift ideas");
+        }
+
+        return {
+          ideas: gifts.slice(0, 6).map((gift, index) => {
+            const searchQuery = gift.searchQuery || `${gift.title || "gift idea"} ${payload.country || ""} ${payload.budget || ""}`.trim();
+            const priceMap = {
+              Budget: payload.budget || "Budget",
+              Medium: payload.budget || "Medium",
+              Premium: payload.budget || "Premium"
+            };
+
+            return {
+              name: gift.title || "Gift idea",
+              why: gift.reason || "This gift matches the selected details.",
+              price: priceMap[gift.priceRange] || gift.priceRange || payload.budget || "Check live price",
+              match: Math.max(96 - index * 2, 84),
+              googleSearchQuery: searchQuery,
+              googleShoppingQuery: searchQuery,
+              stores: payload.store && payload.store !== "Any secure website" ? [payload.store, "Google Shopping"] : ["Google Shopping", "Trusted local stores"],
+              category: gift.category || "Gift",
+              searchQuery
+            };
+          })
+        };
       } catch (error) {
-        throw new Error("Gemini returned a response that was not valid gift JSON.");
+        return {
+          ideas: giftmatchBuildLocalIdeas(payload, error.message),
+          fallback: true
+        };
       }
     }
 
@@ -3466,8 +3427,8 @@ Required JSON format:
 
       resultArea.innerHTML = `
         <div class="match-summary">
-          <div class="ai-badge">${options.fallback ? "Offline fallback active" : (giftmatchShouldUseDirectGemini() ? "Gemini connected" : "AI backend connected")}</div>
-          ${options.fallback ? `<div class="ai-error-box">AI connection failed: ${giftmatchEscapeHtml(options.message)} The app is showing built-in gift ideas and live Google links while the AI connection is fixed.</div>` : ""}
+          <div class="ai-badge">${options.fallback ? "Offline fallback active" : "Gemini connected"}</div>
+          ${options.fallback ? `<div class="ai-error-box">${giftmatchEscapeHtml(options.message || "AI is temporarily unavailable, so we are showing smart built-in gift ideas.")}</div>` : ""}
           <h3>${options.fallback ? "Best fallback gift ideas" : "Best AI gift ideas"}</h3>
           <div class="idea-list" id="ideaList"></div>
         </div>
@@ -3485,7 +3446,7 @@ Required JSON format:
       const ideaList = document.getElementById("ideaList");
       const shoppingGrid = document.getElementById("shoppingGrid");
 
-      ideas.slice(0, 5).forEach(idea => {
+      ideas.slice(0, 6).forEach(idea => {
         const match = Number(idea.match) || 85;
         const row = document.createElement("div");
         row.className = "idea-row";

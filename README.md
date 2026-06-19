@@ -23,38 +23,24 @@ You can also use a meta tag:
 <meta name="giftmatch-gemini-api-key" content="your_gemini_api_key_here">
 ```
 
-3. Optional: choose a model. If omitted, the app uses `gemini-2.0-flash`.
-
-```html
-<script>
-  window.GIFTMATCH_GEMINI_MODEL = "gemini-2.0-flash";
-</script>
-```
-
-or:
-
-```html
-<meta name="giftmatch-gemini-model" content="gemini-2.0-flash">
-```
-
-4. Commit and push to GitHub Pages.
-5. Open the GitHub Pages URL and use the gift finder. The browser will POST directly to Google Gemini's `generateContent` endpoint.
+3. Commit and push to GitHub Pages.
+4. Open the GitHub Pages URL and use the gift finder. The browser will POST directly to Google Gemini's `generateContent` endpoint.
 
 ## How the static AI call works
 
-When `window.GIFTMATCH_GEMINI_API_KEY` or `<meta name="giftmatch-gemini-api-key">` is present, `index.html` skips `/api/gift` and calls Gemini directly:
+When `window.GIFTMATCH_GEMINI_API_KEY` or `<meta name="giftmatch-gemini-api-key">` is present, `index.html` calls Gemini directly from the browser:
 
 ```text
-https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}
+https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}
 ```
 
 The page asks Gemini to return JSON gift ideas, then renders the ideas with Google Search, Google Shopping, and image-search links. If Gemini fails, the page still shows built-in fallback gift ideas.
 
-## Optional backend mode
+## No backend required for GitHub Pages
 
-The repository still includes `api/gift.js` for people who want to deploy on Vercel with a private API key. Static GitHub Pages users can ignore it.
+GitHub Pages cannot run `/api` routes. If no browser Gemini key is configured, the frontend does **not** post to `/api/gift`; it shows smart built-in fallback gift ideas so the static site still works.
 
-If no browser Gemini key is configured, the frontend falls back to posting to `/api/gift`, which requires a backend host such as Vercel.
+The repository still includes `api/gift.js` for people who want to build a separate backend deployment later, but the GitHub Pages frontend does not depend on it.
 
 ## Project structure
 
