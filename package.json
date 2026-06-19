@@ -1,0 +1,22 @@
+{
+  "name": "giftmatch-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Giftmatch.ai - a Vercel-ready AI gift finder using vanilla HTML, CSS, JavaScript, and a secure Gemini backend.",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "keywords": [
+    "gift-finder",
+    "gemini",
+    "vercel",
+    "student-project",
+    "vanilla-javascript"
+  ],
+  "author": "Aarye Premathilaka",
+  "license": "MIT",
+  "devDependencies": {
+    "vercel": "latest"
+  }
+}
