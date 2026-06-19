@@ -107,14 +107,88 @@ curl -X POST http://localhost:3000/api/gift \
 
 ## Fix `AI backend returned an HTML page instead of JSON`
 
-This error means the browser requested `/api/gift`, but the response was an HTML page, usually because the serverless API route is missing from the deployed site. Check these items:
+This error means the browser requested `/api/gift`, but the response was an HTML page, usually because the deployed URL is serving only the static frontend and not the Vercel serverless API route. Follow this checklist in order. Do not skip the health-check steps.
 
-1. Deploy the repository root to Vercel, not only `index.html`. The deployed project must include `api/gift.js`, `package.json`, and `vercel.json`.
-2. In Vercel, verify **Project Settings → Environment Variables** contains `GEMINI_API_KEY` for the environment you are using, then redeploy.
-3. If you set `ALLOWED_ORIGIN` or `ALLOWED_ORIGINS`, confirm the deployed site origin is included exactly. For example, `https://giftmatch-ai.vercel.app` and `https://www.example.com` are different origins.
-4. Visit `/api/gift` on the deployed domain. It should return JSON with `ok: true`, `geminiApiKeyConfigured: true`, and the configured `allowedOrigins`.
-5. If `geminiApiKeyConfigured` is `false`, add or fix the environment variable and redeploy.
-6. If `/api/gift` still returns HTML, check that your custom domain points to the Vercel project that contains this repo.
+### Step 1: Confirm the API file exists in the deployed repository
+
+Your GitHub repository must include these files at the repository root:
+
+- `index.html`
+- `api/gift.js`
+- `package.json`
+- `vercel.json`
+
+If you uploaded only `index.html` to Vercel, `/api/gift` will not exist and Vercel will return an HTML page.
+
+### Step 2: Import the repository root in Vercel
+
+1. Open your Vercel project dashboard.
+2. Go to **Settings → General**.
+3. Confirm **Root Directory** is empty or points to the folder containing `api/gift.js`.
+4. Confirm the project is connected to the GitHub repository that contains this code.
+5. If the wrong folder or repository is selected, create a new Vercel project and import the correct repository root.
+
+### Step 3: Add the Gemini environment variable
+
+1. In Vercel, open **Settings → Environment Variables**.
+2. Add `GEMINI_API_KEY` with your Google Gemini API key.
+3. Select the same environment you are testing, usually **Production** for the public `vercel.app` URL.
+4. Click **Save**.
+5. Redeploy after saving. Vercel does not automatically inject new environment variables into an already-built deployment.
+
+Optional environment variables:
+
+- `GEMINI_MODEL`: defaults to `gemini-2.0-flash`.
+- `ALLOWED_ORIGIN` or `ALLOWED_ORIGINS`: leave unset while testing. If you set it, use the exact origin such as `https://your-project.vercel.app` with no trailing slash.
+
+### Step 4: Redeploy from Vercel
+
+1. Open **Deployments** in Vercel.
+2. Click the three-dot menu on the latest deployment.
+3. Choose **Redeploy**.
+4. Wait until the deployment status is **Ready**.
+
+### Step 5: Run the browser health check
+
+Open this URL, replacing the domain with your real Vercel domain:
+
+```text
+https://your-project.vercel.app/api/gift
+```
+
+A working deployment returns JSON like this:
+
+```json
+{
+  "ok": true,
+  "route": "/api/gift",
+  "geminiApiKeyConfigured": true
+}
+```
+
+Use the result to decide the next step:
+
+- If you see the JSON object and `geminiApiKeyConfigured` is `true`, the API route is deployed correctly. Test the website again.
+- If you see the JSON object but `geminiApiKeyConfigured` is `false`, the Vercel environment variable is missing from that deployment environment. Add `GEMINI_API_KEY` and redeploy.
+- If you see an HTML page, Vercel is not serving `api/gift.js` for that domain. Recheck the repository, root directory, and custom-domain target.
+- If you see a Gemini error in JSON, the backend is deployed, but the Gemini key or model is wrong. Regenerate the API key or set `GEMINI_MODEL` to a model your key can use.
+
+### Step 6: Test with curl
+
+After the browser health check returns JSON, test a real POST request:
+
+```bash
+curl -i -X POST https://your-project.vercel.app/api/gift \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  --data '{"description":"gift for a hiker","interests":["hiking"],"budget":"CHF 20-50","country":"Switzerland"}'
+```
+
+The response should have a `content-type: application/json` header and a JSON body containing an `ideas` array.
+
+### Step 7: Check custom domains last
+
+If `https://your-project.vercel.app/api/gift` works but your custom domain does not, the custom domain points to the wrong Vercel project or an old deployment. In Vercel, open **Settings → Domains**, attach the custom domain to the project that contains this repository, then redeploy.
 
 The project should work on the free Vercel Hobby plan and Gemini free tier within their limits. There is no database, no paid backend, and no paid frontend library.
 
