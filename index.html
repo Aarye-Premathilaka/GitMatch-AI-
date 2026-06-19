@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Giftmatch.ai - Creative Gift Ideas Made Simple</title>
+  <title>Giftmatch.ai</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='14' y='27' width='36' height='28' rx='7' fill='%234285f4'/%3E%3Cpath d='M14 34h36v14H14z' fill='%2334a853' opacity='.9'/%3E%3Cpath d='M30 27h6v28h-6z' fill='%23fbbc05'/%3E%3Cpath d='M11 20l39-7 3 12-39 7z' fill='%23ea4335'/%3E%3Cpath d='M30 19c0-8 16-8 16 1 0 7-8 7-8 13' fill='none' stroke='%23202124' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='38' cy='43' r='3' fill='%23202124'/%3E%3C/svg%3E" />
 
   <style>
     :root {
@@ -63,9 +64,18 @@
     }
 
     .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       font-size: 1.5rem;
       font-weight: 900;
       letter-spacing: -0.5px;
+    }
+
+    .logo-mark {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
     }
 
     .logo span:nth-child(1) { color: var(--blue); }
@@ -925,7 +935,15 @@
 
   <nav>
     <div class="nav-container">
-      <div class="logo">
+      <div class="logo" aria-label="Giftmatch.ai home">
+        <svg class="logo-mark" viewBox="0 0 64 64" role="img" aria-label="Giftmatch.ai gift box logo">
+          <rect x="14" y="27" width="36" height="28" rx="7" fill="#4285f4"></rect>
+          <path d="M14 34h36v14H14z" fill="#34a853" opacity="0.9"></path>
+          <path d="M30 27h6v28h-6z" fill="#fbbc05"></path>
+          <path d="M11 20l39-7 3 12-39 7z" fill="#ea4335"></path>
+          <path d="M30 19c0-8 16-8 16 1 0 7-8 7-8 13" fill="none" stroke="#202124" stroke-width="5" stroke-linecap="round"></path>
+          <circle cx="38" cy="43" r="3" fill="#202124"></circle>
+        </svg>
         <span>G</span><span>i</span><span>f</span><span>t</span>match.ai
       </div>
       <div class="nav-links">
@@ -1686,7 +1704,7 @@
 
     const STORE_OPTIONS = {
       "Switzerland": [
-        "Any trusted store",
+        "Any secure website",
         "Galaxus",
         "Digitec",
         "Brack",
@@ -1705,7 +1723,7 @@
         "Amazon.de"
       ],
       "Germany": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon.de",
         "LEGO official website",
         "MediaMarkt",
@@ -1722,7 +1740,7 @@
         "dm Germany"
       ],
       "Austria": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon.de",
         "LEGO official website",
         "MediaMarkt Austria",
@@ -1735,7 +1753,7 @@
         "Intersport Austria"
       ],
       "France": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon.fr",
         "LEGO official website",
         "Fnac",
@@ -1749,7 +1767,7 @@
         "Sephora France"
       ],
       "Italy": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon.it",
         "LEGO official website",
         "MediaWorld",
@@ -1762,7 +1780,7 @@
         "Sephora Italy"
       ],
       "Spain": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon.es",
         "LEGO official website",
         "MediaMarkt Spain",
@@ -1774,7 +1792,7 @@
         "IKEA Spain"
       ],
       "Netherlands": [
-        "Any trusted store",
+        "Any secure website",
         "Bol",
         "Amazon.nl",
         "LEGO official website",
@@ -1786,7 +1804,7 @@
         "IKEA Netherlands"
       ],
       "Belgium": [
-        "Any trusted store",
+        "Any secure website",
         "Bol",
         "Amazon.com.be",
         "LEGO official website",
@@ -1799,7 +1817,7 @@
         "IKEA Belgium"
       ],
       "United Kingdom": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon UK",
         "Argos",
         "Smyths Toys",
@@ -1814,7 +1832,7 @@
         "Boots UK"
       ],
       "Ireland": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon UK",
         "Smyths Toys Ireland",
         "Sports Direct Ireland",
@@ -1825,7 +1843,7 @@
         "LEGO official website"
       ],
       "United States": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon",
         "Target",
         "Walmart",
@@ -1842,7 +1860,7 @@
         "IKEA USA"
       ],
       "Canada": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon Canada",
         "Walmart Canada",
         "Best Buy Canada",
@@ -1854,7 +1872,7 @@
         "IKEA Canada"
       ],
       "Australia": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon Australia",
         "Kmart Australia",
         "JB Hi-Fi",
@@ -1867,7 +1885,7 @@
         "LEGO official website"
       ],
       "New Zealand": [
-        "Any trusted store",
+        "Any secure website",
         "Mighty Ape",
         "The Warehouse",
         "Noel Leeming",
@@ -1878,7 +1896,7 @@
         "LEGO official website"
       ],
       "India": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon India",
         "Flipkart",
         "Myntra",
@@ -1890,7 +1908,7 @@
         "LEGO official website"
       ],
       "Sri Lanka": [
-        "Any trusted store",
+        "Any secure website",
         "Daraz Sri Lanka",
         "Kapruka",
         "Takaski",
@@ -1902,7 +1920,7 @@
         "Sarasavi Bookshop"
       ],
       "Singapore": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon Singapore",
         "Lazada Singapore",
         "Shopee Singapore",
@@ -1913,7 +1931,7 @@
         "LEGO official website"
       ],
       "Japan": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon Japan",
         "Rakuten",
         "Bic Camera",
@@ -1923,7 +1941,7 @@
         "LEGO official website"
       ],
       "South Korea": [
-        "Any trusted store",
+        "Any secure website",
         "Coupang",
         "Gmarket",
         "11Street",
@@ -1933,7 +1951,7 @@
         "LEGO official website"
       ],
       "United Arab Emirates": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon UAE",
         "Noon",
         "Sharaf DG",
@@ -1943,7 +1961,7 @@
         "LEGO official website"
       ],
       "Other": [
-        "Any trusted store",
+        "Any secure website",
         "Amazon",
         "LEGO official website",
         "Google Shopping",
@@ -2595,12 +2613,12 @@
 
     function getSelectedStore() {
       const storeSelect = document.getElementById("storeFilter");
-      if (!storeSelect || storeSelect.disabled) return "Any trusted store";
-      return storeSelect.value || "Any trusted store";
+      if (!storeSelect || storeSelect.disabled) return "Any secure website";
+      return storeSelect.value || "Any secure website";
     }
 
     function applyStoreChoice(product, selectedStore) {
-      if (!selectedStore || selectedStore === "Any trusted store") return product;
+      if (!selectedStore || selectedStore === "Any secure website") return product;
 
       const storeRules = STORE_PRODUCT_LINKS[selectedStore];
       if (!storeRules) {
@@ -3090,7 +3108,7 @@
 
 
   <script>
-    const GEMINI_BACKEND_URL = "https://giftmatch-ai-gemini-backend.vercel.app/api/gift";
+    const GEMINI_BACKEND_URL = "/api/gift";
 
     function giftmatchGetSelectedInterests() {
       return Array.from(document.querySelectorAll(".chip.active"))
@@ -3125,10 +3143,10 @@
 
       const steps = [
         "Reading your filters...",
-        "Sending request to Gemini...",
-        "Gemini is creating specific gift ideas...",
-        "Preparing Google Shopping links...",
-        "Building AI result cards..."
+        "Sending request to AI...",
+        "Creating specific gift ideas...",
+        "Preparing safe shopping links...",
+        "Building results..."
       ];
 
       let progress = 0;
@@ -3213,7 +3231,7 @@
         resultArea.innerHTML = `
           <div class="match-summary">
             <div class="ai-error-box">
-              Gemini connection failed: ${error.message}. Check Vercel environment variable, CORS backend file, and redeploy.
+              AI connection failed: ${error.message}. Check Vercel environment variable, CORS backend file, and redeploy.
             </div>
             <h3>Fallback Google Search</h3>
             <p>Use this fresh Google search while the AI connection is being fixed.</p>
@@ -3239,7 +3257,7 @@
         resultArea.innerHTML = `
           <div class="match-summary">
             <div class="ai-error-box">
-              Gemini did not return gift ideas. Try writing more details.
+              The AI backend did not return gift ideas. Try writing more details.
             </div>
           </div>
         `;
@@ -3249,7 +3267,7 @@
 
       resultArea.innerHTML = `
         <div class="match-summary">
-          <div class="ai-badge">Gemini AI connected</div>
+          <div class="ai-badge">AI backend connected</div>
           <h3>Best AI gift ideas</h3>
           <div class="idea-list" id="ideaList"></div>
         </div>
@@ -3257,7 +3275,7 @@
         <div class="shopping-title">
           <div>
             <h3>AI shopping results</h3>
-            <p>These results are generated by Gemini. Buttons open fresh Google Search / Shopping with SafeSearch active.</p>
+            <p>These are AI-generated ideas. Open Google Shopping for current prices, and always check safety, price, and availability yourself.</p>
           </div>
         </div>
 
@@ -3274,7 +3292,7 @@
         row.innerHTML = `
           <div>
             <strong>${idea.name || "Gift idea"}</strong>
-            <p>${idea.why || "This gift matches the selected interests."} Exact estimate: ${idea.price || "Check live price"}.</p>
+            <p>${idea.why || "This gift matches the selected interests."} Estimated price: ${idea.price || "Check live price"}.</p>
           </div>
           <div class="match-pill">${match}% match</div>
         `;
