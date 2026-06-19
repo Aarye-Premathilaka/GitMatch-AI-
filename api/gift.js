@@ -1,15 +1,38 @@
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Content-Type": "application/json"
+  "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGIN || "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Accept",
+  "Access-Control-Max-Age": "86400",
+  "Content-Type": "application/json; charset=utf-8"
 };
 
-function sendJson(res, statusCode, body) {
+function setCorsHeaders(res) {
   Object.entries(corsHeaders).forEach(([key, value]) => res.setHeader(key, value));
+}
+
+function sendJson(res, statusCode, body) {
+  setCorsHeaders(res);
   res.status(statusCode).json(body);
+}
+
+async function readJsonSafely(response) {
+  const text = await response.text();
+
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch (error) {
+    return {
+      error: {
+        message: text.trim().startsWith("<")
+          ? "Gemini returned an HTML response instead of JSON. Check the API URL, key, and model name."
+          : "Gemini returned a non-JSON response.",
+        raw: text.slice(0, 500),
+        parseError: error.message
+      }
+    };
+  }
 }
 
 function cleanGeminiJson(text = "") {
@@ -61,20 +84,30 @@ Required JSON format:
 }
 
 module.exports = async function handler(req, res) {
-  Object.entries(corsHeaders).forEach(([key, value]) => res.setHeader(key, value));
+  setCorsHeaders(res);
 
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
+  if (req.method === "GET") {
+    return sendJson(res, 200, {
+      ok: true,
+      route: "/api/gift",
+      message: "Giftmatch.ai API is deployed. Send a POST request to generate gift ideas.",
+      geminiApiKeyConfigured: Boolean(process.env.GEMINI_API_KEY),
+      model: GEMINI_MODEL
+    });
+  }
+
   if (req.method !== "POST") {
-    return sendJson(res, 405, { error: "Method not allowed" });
+    return sendJson(res, 405, { error: "Method not allowed. Use POST /api/gift." });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return sendJson(res, 500, {
-      error: "GEMINI_API_KEY is not configured. Add it as a Vercel environment variable and redeploy."
+      error: "GEMINI_API_KEY is not configured. Add it in Vercel Project Settings > Environment Variables, then redeploy."
     });
   }
 
@@ -95,7 +128,7 @@ module.exports = async function handler(req, res) {
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${encodeURIComponent(apiKey)}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: buildPrompt(input) }] }],
           generationConfig: {
@@ -108,7 +141,7 @@ module.exports = async function handler(req, res) {
       }
     );
 
-    const geminiData = await geminiResponse.json();
+    const geminiData = await readJsonSafely(geminiResponse);
 
     if (!geminiResponse.ok) {
       return sendJson(res, geminiResponse.status, {
@@ -132,8 +165,9 @@ module.exports = async function handler(req, res) {
     const ideas = Array.isArray(parsed.ideas) ? parsed.ideas.slice(0, 5) : [];
     return sendJson(res, 200, { ideas, model: GEMINI_MODEL });
   } catch (error) {
-    return sendJson(res, 500, {
-      error: "Giftmatch.ai backend error.",
+    const statusCode = error instanceof SyntaxError ? 400 : 500;
+    return sendJson(res, statusCode, {
+      error: statusCode === 400 ? "Request body must be valid JSON." : "Giftmatch.ai backend error.",
       details: error.message
     });
   }

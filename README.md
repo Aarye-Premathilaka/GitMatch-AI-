@@ -53,13 +53,19 @@ npm run dev
 
 ### `GET /api/gift`
 
-Opening `/api/gift` in a browser returns:
+Opening `/api/gift` in a browser returns a JSON health check:
 
 ```json
-{"error":"Method not allowed"}
+{
+  "ok": true,
+  "route": "/api/gift",
+  "message": "Giftmatch.ai API is deployed. Send a POST request to generate gift ideas.",
+  "geminiApiKeyConfigured": true,
+  "model": "gemini-2.0-flash"
+}
 ```
 
-That is correct because the route only accepts POST requests.
+If you see an HTML page instead of this JSON object, the API function is not deployed for that URL. Confirm the project is deployed on Vercel from the repository root and redeploy.
 
 ### `POST /api/gift`
 
@@ -96,6 +102,17 @@ curl -X POST http://localhost:3000/api/gift \
    - Value: your Gemini API key
 5. Optional: add `GEMINI_MODEL` if you want to change the model. By default the backend uses `gemini-2.0-flash`.
 6. Deploy.
+7. After deployment, open `https://your-project.vercel.app/api/gift`. It should show the JSON health check above.
+
+## Fix `AI backend returned an HTML page instead of JSON`
+
+This error means the browser requested `/api/gift`, but the response was an HTML page, usually because the serverless API route is missing from the deployed site. Check these items:
+
+1. Deploy the repository root to Vercel, not only `index.html`. The deployed project must include `api/gift.js`, `package.json`, and `vercel.json`.
+2. In Vercel, verify **Project Settings → Environment Variables** contains `GEMINI_API_KEY` for the environment you are using, then redeploy.
+3. Visit `/api/gift` on the deployed domain. It should return JSON with `ok: true` and `geminiApiKeyConfigured: true`.
+4. If `geminiApiKeyConfigured` is `false`, add or fix the environment variable and redeploy.
+5. If `/api/gift` still returns HTML, check that your custom domain points to the Vercel project that contains this repo.
 
 The project should work on the free Vercel Hobby plan and Gemini free tier within their limits. There is no database, no paid backend, and no paid frontend library.
 
