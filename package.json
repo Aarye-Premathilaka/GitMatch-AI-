@@ -2,7 +2,7 @@
   "name": "giftmatch-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "Giftmatch.ai - AI-powered gift finder with a Vercel serverless Gemini backend.",
+  "description": "Giftmatch.ai - static AI-powered gift finder with direct Gemini browser integration and an optional Vercel backend.",
   "scripts": {
     "dev": "vercel dev",
     "start": "vercel dev"
