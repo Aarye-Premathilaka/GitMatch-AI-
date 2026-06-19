@@ -3260,7 +3260,7 @@
         resultArea.innerHTML = `
           <div class="match-summary">
             <div class="ai-error-box">
-              AI connection failed: ${giftmatchEscapeHtml(error.message)} Check the Vercel <code>GEMINI_API_KEY</code> environment variable, confirm <code>/api/gift</code> returns JSON, and redeploy.
+              AI connection failed: ${giftmatchEscapeHtml(error.message)} Open <code>/api/gift</code> on this same domain first. If it returns HTML, redeploy the repository root on Vercel so <code>api/gift.js</code> is included. If it returns JSON with <code>geminiApiKeyConfigured: false</code>, add the Vercel <code>GEMINI_API_KEY</code> environment variable and redeploy.
             </div>
             <h3>Fallback Google Search</h3>
             <p>Use this fresh Google search while the AI connection is being fixed.</p>
