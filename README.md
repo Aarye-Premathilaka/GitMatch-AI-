@@ -101,8 +101,9 @@ curl -X POST http://localhost:3000/api/gift \
    - Name: `GEMINI_API_KEY`
    - Value: your Gemini API key
 5. Optional: add `GEMINI_MODEL` if you want to change the model. By default the backend uses `gemini-2.0-flash`.
-6. Deploy.
-7. After deployment, open `https://your-project.vercel.app/api/gift`. It should show the JSON health check above.
+6. Optional: add `ALLOWED_ORIGIN` or `ALLOWED_ORIGINS` if you want to restrict CORS. Use a comma-separated list for multiple origins, such as `https://giftmatch-ai.vercel.app,https://www.example.com`. Leave it unset to allow `*`.
+7. Deploy.
+8. After deployment, open `https://your-project.vercel.app/api/gift`. It should show the JSON health check above.
 
 ## Fix `AI backend returned an HTML page instead of JSON`
 
@@ -110,9 +111,10 @@ This error means the browser requested `/api/gift`, but the response was an HTML
 
 1. Deploy the repository root to Vercel, not only `index.html`. The deployed project must include `api/gift.js`, `package.json`, and `vercel.json`.
 2. In Vercel, verify **Project Settings → Environment Variables** contains `GEMINI_API_KEY` for the environment you are using, then redeploy.
-3. Visit `/api/gift` on the deployed domain. It should return JSON with `ok: true` and `geminiApiKeyConfigured: true`.
-4. If `geminiApiKeyConfigured` is `false`, add or fix the environment variable and redeploy.
-5. If `/api/gift` still returns HTML, check that your custom domain points to the Vercel project that contains this repo.
+3. If you set `ALLOWED_ORIGIN` or `ALLOWED_ORIGINS`, confirm the deployed site origin is included exactly. For example, `https://giftmatch-ai.vercel.app` and `https://www.example.com` are different origins.
+4. Visit `/api/gift` on the deployed domain. It should return JSON with `ok: true`, `geminiApiKeyConfigured: true`, and the configured `allowedOrigins`.
+5. If `geminiApiKeyConfigured` is `false`, add or fix the environment variable and redeploy.
+6. If `/api/gift` still returns HTML, check that your custom domain points to the Vercel project that contains this repo.
 
 The project should work on the free Vercel Hobby plan and Gemini free tier within their limits. There is no database, no paid backend, and no paid frontend library.
 
