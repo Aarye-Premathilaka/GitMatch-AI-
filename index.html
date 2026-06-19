@@ -3137,6 +3137,40 @@
       return "https://source.unsplash.com/600x400/?" + encodeURIComponent(text);
     }
 
+    function giftmatchBuildLocalIdeas(payload, reason) {
+      const interests = (payload.interests || []).join(" ").toLowerCase();
+      const description = (payload.description || "").toLowerCase();
+      const text = `${interests} ${description}`;
+      const country = payload.country || "Switzerland";
+      const budget = payload.budget || "CHF 20–50";
+      const store = payload.store || "Any secure website";
+
+      const catalog = [
+        { keys: ["gaming", "game", "nintendo", "switch"], name: "Nintendo Switch travel case and thumb-grip set", why: "Useful protection and accessories for someone who likes gaming or Nintendo Switch.", price: "CHF 18–35", match: 91 },
+        { keys: ["lego", "building", "blocks"], name: "LEGO Creator 3-in-1 animal or vehicle set", why: "A specific building gift that is creative, safe, and easy to shop for.", price: "CHF 15–45", match: 90 },
+        { keys: ["hiking", "outdoor", "camping", "nature"], name: "Compact LED headlamp with rechargeable battery", why: "Practical for hiking, camping, evening walks, and everyday outdoor safety.", price: "CHF 20–40", match: 89 },
+        { keys: ["football", "soccer", "sport", "sports"], name: "Size 5 training football with pump needles", why: "A real sports gift that can be used immediately for practice or fun.", price: "CHF 20–45", match: 88 },
+        { keys: ["animal", "animals", "cat", "dog", "pet"], name: "Custom pet photo keychain or small framed print", why: "Personal and animal-related without needing exact clothing sizes.", price: "CHF 12–35", match: 87 },
+        { keys: ["music", "headphones", "audio"], name: "Wireless Bluetooth speaker for a desk or room", why: "A practical music gift for listening at home, school, or outside.", price: "CHF 25–60", match: 86 },
+        { keys: ["art", "drawing", "creative", "paint"], name: "Alcohol marker starter set with sketchbook", why: "A hands-on creative gift for drawing, design, and personal projects.", price: "CHF 18–45", match: 86 },
+        { keys: ["photo", "camera", "memories"], name: "Instant camera accessory album with colorful photo corners", why: "Good for someone who likes photos, memories, and decorating their room.", price: "CHF 15–35", match: 85 }
+      ];
+
+      const matched = catalog.filter(item => item.keys.some(key => text.includes(key)));
+      const selected = (matched.length ? matched : catalog).slice(0, 5);
+
+      return selected.map((item, index) => ({
+        name: item.name,
+        why: item.why,
+        price: item.price,
+        match: Math.max(item.match - index, 80),
+        googleSearchQuery: `${item.name} gift ${country} ${budget}`,
+        googleShoppingQuery: `${item.name} ${country} ${budget}`,
+        stores: store === "Any secure website" ? ["Google Shopping", "Galaxus", "Amazon"] : [store, "Google Shopping"],
+        fallbackReason: reason
+      }));
+    }
+
     function showAiLoading() {
       const loadingPanel = document.getElementById("loadingPanel");
       const resultArea = document.getElementById("resultArea");
@@ -3257,29 +3291,15 @@
         const ideas = Array.isArray(data.ideas) ? data.ideas : [];
         renderAiResults(ideas, payload);
       } catch (error) {
-        resultArea.innerHTML = `
-          <div class="match-summary">
-            <div class="ai-error-box">
-              AI connection failed: ${giftmatchEscapeHtml(error.message)} Open <code>/api/gift</code> on this same domain first. If it returns HTML, redeploy the repository root on Vercel so <code>api/gift.js</code> is included. If it returns JSON with <code>geminiApiKeyConfigured: false</code>, add the Vercel <code>GEMINI_API_KEY</code> environment variable and redeploy.
-            </div>
-            <h3>Fallback Google Search</h3>
-            <p>Use this fresh Google search while the AI connection is being fixed.</p>
-            <div class="google-actions">
-              <a class="google-button" href="${giftmatchGoogleUrl(description + " gift ideas " + interests.join(" ") + " " + budget + " " + country, "normal")}" target="_blank" rel="noopener noreferrer">
-                Open Google Search
-              </a>
-              <a class="google-button secondary-google" href="${giftmatchGoogleUrl(description + " gift ideas " + interests.join(" ") + " " + budget + " " + country, "shopping")}" target="_blank" rel="noopener noreferrer">
-                Open Google Shopping
-              </a>
-            </div>
-          </div>
-        `;
-        resultArea.style.display = "block";
-        resultArea.scrollIntoView({ behavior: "smooth", block: "start" });
+        const fallbackIdeas = giftmatchBuildLocalIdeas(payload, error.message);
+        renderAiResults(fallbackIdeas, payload, {
+          fallback: true,
+          message: error.message
+        });
       }
     }
 
-    function renderAiResults(ideas, payload) {
+    function renderAiResults(ideas, payload, options = {}) {
       const resultArea = document.getElementById("resultArea");
 
       if (!ideas.length) {
@@ -3296,15 +3316,16 @@
 
       resultArea.innerHTML = `
         <div class="match-summary">
-          <div class="ai-badge">AI backend connected</div>
-          <h3>Best AI gift ideas</h3>
+          <div class="ai-badge">${options.fallback ? "Offline fallback active" : "AI backend connected"}</div>
+          ${options.fallback ? `<div class="ai-error-box">AI connection failed: ${giftmatchEscapeHtml(options.message)} The app is showing built-in gift ideas and live Google links while <code>/api/gift</code> is fixed.</div>` : ""}
+          <h3>${options.fallback ? "Best fallback gift ideas" : "Best AI gift ideas"}</h3>
           <div class="idea-list" id="ideaList"></div>
         </div>
 
         <div class="shopping-title">
           <div>
-            <h3>AI shopping results</h3>
-            <p>These are AI-generated ideas. Open Google Shopping for current prices, and always check safety, price, and availability yourself.</p>
+            <h3>${options.fallback ? "Fallback shopping links" : "AI shopping results"}</h3>
+            <p>${options.fallback ? "These built-in ideas keep the tool usable when the backend is unavailable." : "These are AI-generated ideas."} Open Google Shopping for current prices, and always check safety, price, and availability yourself.</p>
           </div>
         </div>
 
